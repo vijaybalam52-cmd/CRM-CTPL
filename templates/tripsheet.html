@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Rapid-I - Trip Sheet{% endblock %}
+{% block page_title %}Trip Sheet{% endblock %}
+
+{% block nav_tripsheet_active %}active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tripsheet-page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tripsheet-content">
+    <!-- Vehicle and Fuel Information Box -->
+    <div class="vehicle-info-box">
+        <div class="vehicle-header">
+            <div class="vehicle-header-item">Vehicle</div>
+            <div class="vehicle-header-item">Fuel</div>
+            <div class="vehicle-header-item">Mileage</div>
+            <div class="vehicle-header-item">per l/kg Rs.</div>
+        </div>
+        <div class="vehicle-body">
+            <input type="text" class="vehicle-data-cell" data-col="0" />
+            <select class="vehicle-data-cell" data-col="1">
+                <option value="">Select</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="CNG">CNG</option>
+            </select>
+            <input type="text" class="vehicle-data-cell" data-col="2" />
+            <input type="text" class="vehicle-data-cell" data-col="3" />
+            </div>
+            </div>
+
+    <!-- Total Amount and Expenses Table -->
+    <div class="expenses-info-box">
+        <div class="expenses-header">
+            <div class="expenses-header-item">Total amt req</div>
+            <div class="expenses-header-item">Fuel Req</div>
+            <div class="expenses-header-item">Fuel Cost</div>
+            <div class="expenses-header-item">Hotel</div>
+            <div class="expenses-header-item">Food</div>
+            </div>
+        <div class="expenses-body">
+            <input type="text" class="expenses-data-cell" data-col="0" readonly />
+            <input type="text" class="expenses-data-cell" data-col="1" readonly />
+            <input type="text" class="expenses-data-cell" data-col="2" readonly />
+            <input type="text" class="expenses-data-cell" data-col="3" />
+            <input type="text" class="expenses-data-cell" data-col="4" />
+        </div>
+    </div>
+
+    <!-- Engineer, Date, and Trip Sheet Number -->
+    <div class="tripsheet-info-section">
+        <div class="engineer-date-box">
+            <div class="engineer-date-label-section">
+                <div class="engineer-date-label">Engineer</div>
+                <div class="engineer-date-label">Date</div>
+            </div>
+            <div class="engineer-date-value-section">
+                <input type="text" class="engineer-date-value engineer-input" id="engineerName" placeholder="Enter name" />
+                <div class="engineer-date-divider"></div>
+                <input type="text" class="engineer-date-value date-input" id="tripSheetDate" readonly />
+            </div>
+        </div>
+        <div class="tripsheet-no-box">
+            <div class="tripsheet-no-label">
+                <div>Trip Sheet</div>
+                <div>No.</div>
+            </div>
+            <input type="text" class="tripsheet-no-input" placeholder="" />
+        </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <div class="table-header">
+                <div class="th" style="width: 95px;">SN</div>
+                <div class="th" style="width: 130px;"><div>M/c</div><div>No.</div></div>
+                <div class="th" style="width: 450px;">Customer Name</div>
+                <div class="th" style="width: 280px;">Purpose</div>
+                <div class="th" style="width: 190px;"><div>Task</div><div>Class</div></div>
+                <div class="th" style="width: 285px;"><div>Cluster</div><div>Location</div></div>
+                <div class="th" style="width: 200px;"><div>Est.</div><div>Dist Kms</div></div>
+                <div class="th" style="width: 220px;"><div>Est. Trvl</div><div>Time</div></div>
+                <div class="th" style="width: 220px;"><div>Food, Fuel</div><div>others</div></div>
+                <div class="th" style="width: 200px;"><div>Est. Job</div><div>time</div></div>
+                <div class="th" style="width: 190px;"><div>Schd</div><div>ET</div></div>
+                <div class="th" style="width: 200px;"><div>Actual</div><div>Time</div></div>
+                <div class="th" style="width: 150px;"><div>Actual</div><div>ODO Read</div></div>
+            </div>
+            <div class="table-body" id="mainTableBody"></div>
+            <div class="table-total-row" id="tableTotalRow"></div>
+        </div>
+    </div>
+
+    <!-- Print Button -->
+    <button class="print-button" id="printTableButton">
+        <span>Print</span>
+    </button>
+
+    <!-- Clear Button -->
+    <button class="clear-button" id="clearTableButton">
+        <span>Clear</span>
+    </button>
+
+    <!-- Master Scrollbar -->
+    <div class="master-scrollbar-container">
+        <div id="masterScrollbar" class="master-scrollbar">
+            <div class="scrollbar-content"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="{{ url_for('static', filename='js/tripsheet.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Rapid-I - Work Done{% endblock %}
+{% block page_title %}WORK DONEv7{% endblock %}
+
+{% block nav_workdone_active %}active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/workdone-page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="workdone-content">
+    <!-- Date Filter -->
+    <div class="date-filter-container">
+        <div class="date-filter-label">Date Filter:</div>
+        <div class="date-filter-inputs">
+            <div class="date-input-group">
+                <label for="fromDate">From Date:</label>
+                <input type="date" id="fromDate" class="date-filter-input">
+            </div>
+            <div class="date-input-group">
+                <label for="toDate">To Date:</label>
+                <input type="date" id="toDate" class="date-filter-input">
+    </div>
+            <button id="applyDateFilter" class="date-filter-button">Apply Filter</button>
+            <button id="clearDateFilter" class="date-filter-button date-filter-button-clear">Clear</button>
+    </div>
+    </div>
+
+    <!-- Total Spares (left) and Fault Inv (right) Buttons -->
+    <button type="button" id="totalSparesBtn" class="total-spares-button">Total Spares</button>
+    <button type="button" id="faultInvBtn" class="fault-inv-button">Fault Inv</button>
+
+    <!-- Main Table -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <div class="table-header-wrapper">
+            <div class="table-header">
+                <div class="th" style="width: 70px;">SI.</div>
+                <div class="th" style="width: 90px;">Date</div>
+                <div class="th" style="width: 60px;">M/C</div>
+                <div class="th" style="width: 350px;">Customer Name</div>
+                <div class="th" style="width: 28px; display: flex; align-items: center; justify-content: center;">
+                    <div style="transform: rotate(-90deg); white-space: nowrap;">Prior</div>
+                </div>
+                <div class="th" style="width: 25px;">S</div>
+                <div class="th" style="width: 25px;">A</div> 
+                <div class="th" style="width: 25px;">I</div>
+                <div class="th" style="width: 25px;">D</div>
+                <div class="th" style="width: 25px;">E</div>
+                <div class="th" style="width: 25px;">F</div>
+                <div class="th" style="width: 25px;">P</div>
+                <div class="th" style="width: 120px;">Purpose</div>
+                <div class="th" style="width: 430px;">Remarks</div>
+                <div class="th" style="width: 60px;">ZARC</div>
+                <div class="th" style="width: 125px;">Cluster</div>
+                <div class="th" style="width: 190px;">Person</div>
+                <div class="th" style="width: 140px;">Contact</div>
+                <div class="th" style="width: 70px;">Rg</div>
+                <div class="th" style="width: 130px;">Done Date</div>
+                <div class="th" style="width: 150px;">Done By</div>
+                <div class="th" style="width: 200px;">Spare 1</div>
+                <div class="th" style="width: 200px;">Spare 2</div>
+                <div class="th" style="width: 200px;">Spare 3</div>
+                <div class="th" style="width: 200px;">Spare 4</div>
+                <div class="th" style="width: 200px; border-right: none;">Spare 5</div>
+            </div>
+            </div>
+            <div class="table-body-wrapper">
+            <div class="table-body" id="mainTableBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scrollbar -->
+    <div class="scrollbar-container">
+        <div id="masterScrollbar">
+            <div class="scrollbar-content"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="{{ url_for('static', filename='js/workdone.js') }}"></script>
+{% endblock %}

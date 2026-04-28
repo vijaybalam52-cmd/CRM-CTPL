@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Rapid-I - Admin Panel{% endblock %}
+{% block page_title %}Admin Panel{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-panel.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <div class="admin-card-row">
+        <div class="admin-card admin-card-total">
+            <div class="admin-card-icon">
+                <img src="{{ url_for('static', filename='images/total_user.svg') }}" alt="Total users">
+            </div>
+            <div class="admin-card-info">
+                <div class="admin-card-number">{{ stats.total_users }}</div>
+                <div class="admin-card-label">Total Users</div>
+            </div>
+        </div>
+
+        <div class="admin-card admin-card-admins">
+            <div class="admin-card-icon">
+                <img src="{{ url_for('static', filename='images/admin.png') }}" alt="Admins">
+            </div>
+            <div class="admin-card-info">
+                <div class="admin-card-number">{{ stats.admin_count }}</div>
+                <div class="admin-card-label">Admins</div>
+            </div>
+        </div>
+
+        <div class="admin-card admin-card-regular">
+            <div class="admin-card-icon">
+                <img src="{{ url_for('static', filename='images/regular_user.png') }}" alt="Regular users">
+            </div>
+            <div class="admin-card-info">
+                <div class="admin-card-number">{{ stats.regular_count }}</div>
+                <div class="admin-card-label">Regular Users</div>
+            </div>
+        </div>
+
+        <div class="admin-card admin-card-active">
+            <div class="admin-card-icon">
+                <img src="{{ url_for('static', filename='images/active_today.png') }}" alt="Active today">
+            </div>
+            <div class="admin-card-info">
+                <div class="admin-card-number">{{ stats.active_today }}</div>
+                <div class="admin-card-label">Active Today</div>
+            </div>
+        </div>
+    </div>
+
+    <a class="admin-create-btn" href="{{ url_for('admin_register') }}">
+        <span class="admin-create-icon">+</span>
+        <span class="admin-create-text">Create New User</span>
+    </a>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="admin-flash">
+          {% for category, message in messages %}
+            <div class="admin-flash-item {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th style="width: 260px;">Name</th>
+                    <th style="width: 120px;">Role</th>
+                    <th style="width: 340px;">Email</th>
+                    <th style="width: 170px;">Phone Number</th>
+                    <th style="width: 120px;">Tag</th>
+                    <th style="width: 150px;">Created Date</th>
+                    <th style="width: 170px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <span class="admin-role-pill {{ (user.role_name or 'user') | trim | lower }}">{{ (user.role_name or 'User') | trim }}</span>
+                    </td>
+                    <td>{{ user.email_id }}</td>
+                    <td>{{ user.phone_no }}</td>
+                    <td>{{ user.tag_name }}</td>
+                    <td>{{ user.create_date }}</td>
+                    <td>
+                        <div class="admin-action-cell">
+                            <a class="admin-btn-edit" href="{{ url_for('admin_edit_user', user_id=user.id) }}">Edit</a>
+                            <form method="post" action="{{ url_for('admin_delete_user', user_id=user.id) }}" class="admin-delete-form" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <button type="submit" class="admin-btn-delete">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

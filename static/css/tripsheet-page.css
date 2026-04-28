@@ -1,0 +1,652 @@
+/* Trip Sheet Page - Content styles (extends base layout) */
+.tripsheet-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1920px; /* Full canvas width */
+  height: 1080px; /* Full canvas height */
+  min-width: 1920px;
+  min-height: 1080px;
+  max-width: 1920px;
+  max-height: 1080px;
+  z-index: 1;
+  background: #FFF9E6;
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+/* Vehicle and Fuel Information Box */
+.tripsheet-content .vehicle-info-box {
+  position: absolute;
+  left: 127px; /* After sidebar */
+  top: 128px; /* Moved down to align with engineer/date section */
+  width: 500px; /* Width for 4 columns */
+  height: 68px; /* Increased height: 34px header + 34px body */
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: white;
+  border: 2px solid #9E00B8; /* Clear outer border */
+  box-sizing: border-box;
+}
+
+.tripsheet-content .vehicle-header {
+  background: #9E00B8;
+  height: 34px; /* Increased header height */
+  display: flex;
+  align-items: center;
+  padding: 0;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 15px; /* Increased font size */
+  color: white;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.4); /* Stronger border */
+  box-sizing: border-box;
+}
+
+.tripsheet-content .vehicle-header-item {
+  flex: 1;
+  text-align: center;
+  padding: 0;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 2px solid rgba(255, 255, 255, 0.4); /* Stronger border */
+  box-sizing: border-box;
+  min-width: 0; /* Allow flex items to shrink */
+}
+
+.tripsheet-content .vehicle-header-item:last-child {
+  border-right: none;
+}
+
+.tripsheet-content .vehicle-body {
+  background: white;
+  height: 34px; /* Increased row height */
+  display: flex;
+  align-items: stretch;
+  padding: 0;
+  margin: 0;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  color: black;
+  border-radius: 0 0 8px 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.tripsheet-content .vehicle-data-cell {
+  flex: 1;
+  color: black;
+  line-height: 26px; /* Increased line height */
+  margin: 0;
+  text-align: center;
+  font-size: 15px; /* Increased font size */
+  border: none;
+  border-right: 2px solid #B9B9B9; /* Stronger border */
+  padding: 4px 8px; /* Increased padding for better spacing */
+  background: white;
+  outline: none;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  box-sizing: border-box;
+  height: 100%;
+  vertical-align: middle;
+  min-width: 0; /* Allow flex items to shrink */
+  width: 0; /* Force equal width distribution */
+}
+
+.tripsheet-content .vehicle-data-cell:last-child {
+  border-right: none;
+}
+
+.tripsheet-content .vehicle-data-cell:focus {
+  background: #FFFACD;
+  border-right: 2px solid #9E00B8; /* Stronger focus border */
+  outline: none;
+}
+
+/* Select dropdown styling to match input cells */
+.tripsheet-content .vehicle-data-cell select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 15px;
+  color: black;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.tripsheet-content .vehicle-data-cell select:focus {
+  background: transparent;
+}
+
+.tripsheet-content .vehicle-data-cell select option {
+  text-align: center;
+  padding: 4px;
+}
+
+/* Total Amount and Expenses Table */
+.tripsheet-content .expenses-info-box {
+  position: absolute;
+  left: 643px; /* Positioned next to vehicle table (127px + 500px + 16px gap) */
+  top: 128px; /* Same top position as vehicle table */
+  width: 500px; /* Increased width for 5 columns */
+  height: 68px; /* Increased height: 34px header + 34px body */
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: white;
+  border: 2px solid #9E00B8; /* Clear outer border */
+  box-sizing: border-box;
+}
+
+.tripsheet-content .expenses-header {
+  background: #9E00B8;
+  height: 34px; /* Increased header height */
+  display: flex;
+  align-items: center;
+  padding: 0;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 15px; /* Increased font size */
+  color: white;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.4); /* Stronger border */
+  box-sizing: border-box;
+}
+
+.tripsheet-content .expenses-header-item {
+  flex: 1;
+  text-align: center;
+  padding: 0;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 2px solid rgba(255, 255, 255, 0.4); /* Stronger border */
+  box-sizing: border-box;
+  min-width: 0; /* Allow flex items to shrink */
+}
+
+.tripsheet-content .expenses-header-item:last-child {
+  border-right: none;
+}
+
+.tripsheet-content .expenses-body {
+  background: white;
+  height: 34px; /* Increased row height */
+  display: flex;
+  align-items: stretch;
+  padding: 0;
+  margin: 0;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  color: black;
+  border-radius: 0 0 8px 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.tripsheet-content .expenses-data-cell {
+  flex: 1;
+  color: black;
+  line-height: 26px; /* Increased line height */
+  margin: 0;
+  text-align: center;
+  font-size: 15px; /* Increased font size */
+  border: none;
+  border-right: 2px solid #B9B9B9; /* Stronger border */
+  padding: 4px 8px; /* Increased padding for better spacing */
+  background: white;
+  outline: none;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  box-sizing: border-box;
+  height: 100%;
+  vertical-align: middle;
+  min-width: 0; /* Allow flex items to shrink */
+  width: 0; /* Force equal width distribution */
+}
+
+.tripsheet-content .expenses-data-cell:last-child {
+  border-right: none;
+}
+
+.tripsheet-content .expenses-data-cell:focus {
+  background: #FFFACD;
+  border-right: 2px solid #9E00B8; /* Stronger focus border */
+  outline: none;
+}
+
+.tripsheet-content .expenses-data-cell[readonly] {
+  background: #F5F5F5;
+  cursor: not-allowed;
+  color: #333;
+}
+
+.tripsheet-content .expenses-data-cell[readonly]:focus {
+  background: #F5F5F5;
+  border-right: 2px solid #B9B9B9;
+}
+
+/* Engineer, Date, and Trip Sheet Number Section */
+.tripsheet-content .tripsheet-info-section {
+  position: absolute;
+  right: 100px; /* 80px sidebar + 20px margin */
+  top: 128px;
+  display: flex;
+  gap: 39px;
+  align-items: flex-start;
+}
+
+.tripsheet-content .engineer-date-box {
+  width: 200px;
+  height: 50px;
+  border: 1px solid #FF0606;
+  border-radius: 5px;
+  display: flex;
+  overflow: hidden;
+  background: white;
+}
+
+.tripsheet-content .engineer-date-label-section {
+  width: 80px;
+  background: #FF0606;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 8px;
+  font-family: "Inter", sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  color: white;
+  line-height: 1.4;
+}
+
+.tripsheet-content .engineer-date-label {
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+.tripsheet-content .engineer-date-label:last-child {
+  margin-bottom: 0;
+}
+
+.tripsheet-content .engineer-date-value-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 12px;
+  position: relative;
+  font-family: "Inter", sans-serif;
+  font-weight: normal;
+  font-size: 13px;
+  color: black;
+  line-height: 1.4;
+}
+
+.tripsheet-content .engineer-date-value {
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+.tripsheet-content .engineer-date-value:last-child {
+  margin-bottom: 0;
+}
+
+.tripsheet-content .engineer-date-value-section input.engineer-date-value {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  font-family: "Inter", sans-serif;
+  font-weight: normal;
+  font-size: 13px;
+  color: black;
+  line-height: 1.4;
+}
+
+.tripsheet-content .engineer-date-value-section input.engineer-input:focus {
+  background: #FFFACD;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+.tripsheet-content .engineer-date-value-section input.date-input {
+  cursor: default;
+}
+
+.tripsheet-content .engineer-date-divider {
+  position: absolute;
+  left: 12px;
+  top: 22px;
+  width: calc(100% - 24px);
+  height: 1px;
+  background: #CC0000;
+}
+
+.tripsheet-content .tripsheet-no-box {
+  width: 160px;
+  height: 50px;
+  border: 1px solid #FF0606;
+  border-radius: 5px;
+  display: flex;
+  overflow: hidden;
+  background: white;
+}
+
+.tripsheet-content .tripsheet-no-label {
+  width: 95px;
+  background: #FF0606;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Inter", sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  color: white;
+  line-height: 1.4;
+  text-align: center;
+  padding: 0 5px;
+}
+
+.tripsheet-content .tripsheet-no-label div {
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+
+.tripsheet-content .tripsheet-no-label div:last-child {
+  margin-bottom: 0;
+}
+
+.tripsheet-content .tripsheet-no-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0 12px;
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  background: white;
+  text-align: left;
+}
+
+/* Main Table */
+.tripsheet-content .table-container {
+  position: absolute;
+  left: 127px;
+  top: 241px;
+  width: calc(100% - 250px); /* Decreased width to make room for scrollbar */
+  height: calc(100% - 280px);
+  overflow: hidden;
+}
+
+.tripsheet-content .table-wrapper {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #B9B9B9;
+  border-radius: 5px;
+  overflow: hidden;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.tripsheet-content .table-header {
+  display: flex;
+  background: #0070C0;
+  height: 50px;
+  flex-shrink: 0;
+  border-radius: 5px 5px 0 0;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: white;
+}
+
+.tripsheet-content .table-header .th {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tripsheet-content .table-header .th:last-child {
+  border-right: none;
+}
+
+.tripsheet-content .table-header .th div {
+  line-height: 1.2;
+}
+
+.tripsheet-content .table-body {
+  flex: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background: white;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.tripsheet-content .table-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.tripsheet-content .table-body .tr {
+  display: flex;
+  height: 30px;
+  min-height: 40px;
+  border-bottom: 1px solid #B9B9B9;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+}
+
+.tripsheet-content .table-body .tr:last-child {
+  border-bottom: none;
+}
+
+/* Total row - fixed at bottom, outside scrollable area */
+.tripsheet-content .table-total-row {
+  display: flex;
+  background: #FF0606 !important;
+  color: white;
+  font-weight: bold;
+  height: 34px;
+  min-height: 34px;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0 0 5px 5px;
+  font-family: "Calibri", sans-serif;
+  font-size: 18px;
+  width: 100%; /* Match table wrapper width */
+}
+
+.tripsheet-content .table-total-row .td {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 18px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white;
+  font-weight: bold;
+}
+
+.tripsheet-content .table-total-row .td:last-child {
+  border-right: none;
+}
+
+.tripsheet-content .table-body .td {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-right: 1px solid #B9B9B9;
+  font-size: 18px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tripsheet-content .table-body .td:last-child {
+  border-right: none;
+}
+
+.tripsheet-content .table-body .total-row .td {
+  color: white;
+  font-weight: bold;
+}
+
+/* Sequence Sidebar - Removed */
+
+/* Print Button */
+.tripsheet-content .print-button {
+  position: absolute;
+  right: 22px; /* Position at right corner */
+  bottom: 100px; /* Above Clear button (50px + 44px + 6px gap) */
+  width: 100px;
+  height: 44px;
+  background: linear-gradient(180deg, #00A651 0%, #008040 100%);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0px 2px 0px 0px #006030, 0px 3px 4px 0px rgba(0, 0, 0, 0.3);
+  transition: all 150ms;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tripsheet-content .print-button:hover {
+  background: linear-gradient(180deg, #00B661 0%, #009050 100%);
+  box-shadow: 0px 2px 0px 0px #006030, 0px 4px 6px 0px rgba(0, 0, 0, 0.4);
+}
+
+.tripsheet-content .print-button:active {
+  box-shadow: inset 0px 2px 0px 0px #006030, inset 0px 3px 4px 0px rgba(0, 0, 0, 0.3);
+  transform: translateY(2px);
+}
+
+.tripsheet-content .print-button span {
+  position: relative;
+  z-index: 2;
+}
+
+/* Clear Button */
+.tripsheet-content .clear-button {
+  position: absolute;
+  right: 22px; /* Position at right corner */
+  bottom: 50px; /* Keep Y position from bottom */
+  width: 100px;
+  height: 44px;
+  background: linear-gradient(180deg, #0070C0 0%, #005A9E 100%);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0px 2px 0px 0px #004080, 0px 3px 4px 0px rgba(0, 0, 0, 0.3);
+  transition: all 150ms;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tripsheet-content .clear-button:hover {
+  background: linear-gradient(180deg, #0080D0 0%, #006AB0 100%);
+  box-shadow: 0px 2px 0px 0px #004080, 0px 4px 6px 0px rgba(0, 0, 0, 0.4);
+}
+
+.tripsheet-content .clear-button:active {
+  box-shadow: inset 0px 2px 0px 0px #004080, inset 0px 3px 4px 0px rgba(0, 0, 0, 0.3);
+  transform: translateY(2px);
+}
+
+.tripsheet-content .clear-button span {
+  position: relative;
+  z-index: 2;
+}
+
+/* Master Scrollbar */
+.tripsheet-content .master-scrollbar-container {
+  position: absolute;
+  right: 0; /* Positioned at the right edge */
+  top: 241px; /* Match main table top position */
+  width: 12px; /* Decreased scrollbar width */
+  height: calc(100% - 280px); /* Match main table and sequence sidebar height */
+  z-index: 10;
+}
+
+.tripsheet-content .master-scrollbar {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #f5f5f5;
+  border: 1px solid #B9B9B9;
+  border-radius: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f5f5f5;
+}
+
+.tripsheet-content .master-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Decreased scrollbar width */
+}
+
+.tripsheet-content .master-scrollbar::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+.tripsheet-content .master-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+  border: 2px solid #f5f5f5;
+}
+
+.tripsheet-content .master-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.tripsheet-content .master-scrollbar .scrollbar-content {
+  width: 1px;
+  height: 2000px; /* Adjust based on content height */
+}

@@ -1,0 +1,37 @@
+/* Login page overrides to work with base layout */
+.login-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef4fb;
+    z-index: 50;
+}
+
+.login-flash {
+    margin: 8px 0 16px;
+    display: grid;
+    gap: 8px;
+}
+
+.login-flash-item {
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #e9f4ff;
+    color: #0a4a7a;
+    border: 1px solid #b6d7f2;
+}
+
+.login-flash-item.error {
+    background: #ffe9ea;
+    color: #8a1f24;
+    border-color: #f4b5b8;
+}
+
+.login-flash-item.success {
+    background: #e7f8ee;
+    color: #1d6b3a;
+    border-color: #a9e4bf;
+}

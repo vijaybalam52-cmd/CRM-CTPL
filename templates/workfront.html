@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Rapid-I - Work Front{% endblock %}
+{% block page_title %}WORK FRONT{% endblock %}
+
+{% block nav_wf_field_active %}active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/workfront-page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="workfront-content">
+    <!-- Action Buttons - positioned above respective columns -->
+    <div class="sort-button">
+        <div class="sort-button-3d"></div>
+        <span>Sort</span>
+    </div>
+    <div class="f-button">
+        <div class="f-button-3d"></div>
+        <span>F</span>
+    </div>
+    <div class="t-button">
+        <div class="t-button-3d"></div>
+        <span>T</span>
+    </div>
+    <div class="wpmv-button">
+        <div class="wpmv-button-3d"></div>
+        <span>W/PMV</span>
+    </div>
+    <div class="generate-button">
+        <div class="generate-button-3d"></div>
+        <span class="generate-button-text">Generate Tripsheet</span>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <div class="table-header">
+                <div class="th" style="width: 60px;">SI.</div>
+                <div class="th" style="width: 75px;">Date</div>
+                <div class="th" style="width: 45px;">M/C</div>
+                <div class="th" style="width: 80px;">Ticket No</div>
+                <div class="th" style="width: 270px;">Customer Name</div>
+                <div class="th" style="width: 26px; display: flex; align-items: center; justify-content: center;">
+                    <div style="transform: rotate(-90deg); white-space: nowrap;">Prior</div>
+                </div>
+                <div class="th" style="width: 15px;">S</div>
+                <div class="th" style="width: 15px;">A</div> 
+                <div class="th" style="width: 15px;">I</div>
+                <div class="th" style="width: 15px;">D</div>
+                <div class="th" style="width: 15px;">E</div>
+                <div class="th" style="width: 15px;">F</div>
+                <div class="th" style="width: 15px;">P</div>
+                <div class="th" style="width: 85px;">Purpose</div>
+                <div class="th" style="width: 295px;">Remarks</div>
+                <div class="th" style="width: 45px;">ZARC</div>
+                <div class="th" style="width: 110px;">Cluster</div>
+                <div class="th" style="width: 110px;">Person</div>
+                <div class="th" style="width: 100px;">Contact</div>
+                <div class="th" style="width: 50px;">Rg</div> 
+                <div class="th" style="width: 65px;">Logby</div>
+                <div class="th" style="width: 50px; border-right: none;">Done</div>
+            </div>
+            <div class="table-body" id="mainTableBody"></div>
+            <div class="table-total-row" id="tableTotalRow"></div>
+        </div>
+    </div>
+
+    <!-- SPR Column -->
+    <div class="spr-container">
+        <div class="spr-wrapper">
+            <div class="spr-header">Spr</div>
+            <div class="spr-body" id="sprBody"></div>
+        </div>
+    </div>
+
+    <!-- PR Column -->
+    <div class="pr-container">
+        <div class="pr-wrapper">
+            <div class="pr-header">PR</div>
+            <div class="pr-body" id="prBody"></div>
+        </div>
+    </div>
+
+    <!-- Scrollbar -->
+    <div class="scrollbar-container">
+        <div id="masterScrollbar">
+            <div class="scrollbar-content"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/workfront.js') }}"></script>
+{% endblock %}

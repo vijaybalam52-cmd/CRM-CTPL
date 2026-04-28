@@ -1,0 +1,394 @@
+/* Work Done Page - Content styles (extends base layout) */
+.workdone-content {
+  position: absolute;
+  left: 127px;
+  top: 117px;
+  right: 20px;
+  bottom: 20px;
+  z-index: 3;
+}
+
+/* Date Filter Styles */
+.workdone-content .date-filter-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 1000px; /* leave space for Fault Inv button on right */
+  height: 50px;
+  background: #f5f5f5;
+  border: 1px solid #006db8;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.workdone-content .fault-inv-button {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  width: 220px;
+  height: 50px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #00b0ff 0%, #0070c0 100%);
+  box-shadow: 0px 3px 0px 0px #004080, 0px 5px 8px 0px rgba(0, 0, 0, 0.35);
+  color: white;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 17px;
+  cursor: pointer;
+  z-index: 11;
+}
+
+/* Total Spares button - left side */
+.workdone-content .total-spares-button {
+  position: absolute;
+  top: 0;
+  left: 1330px;
+  width: 180px;
+  height: 50px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #00c853 0%, #007e33 100%);
+  box-shadow: 0px 3px 0px 0px #004d26, 0px 5px 8px 0px rgba(0, 0, 0, 0.25);
+  color: white;
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 11;      
+}
+
+.workdone-content .total-spares-button:active {
+  transform: translateY(1px);
+  box-shadow: 0px 2px 0px 0px #004d26, 0px 4px 7px 0px rgba(0, 0, 0, 0.25);
+}
+
+.workdone-content .fault-inv-button:active {
+  transform: translateY(1px);
+  box-shadow: 0px 2px 0px 0px #004080, 0px 4px 7px 0px rgba(0, 0, 0, 0.35);
+}
+
+.workdone-content .date-filter-label {
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  color: #006db8;
+  margin-right: 15px;
+  white-space: nowrap;
+}
+
+.workdone-content .date-filter-inputs {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.workdone-content .date-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.workdone-content .date-input-group label {
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.workdone-content .date-filter-input {
+  font-family: "Calibri", sans-serif;
+  font-size: 14px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: white;
+  color: #333;
+  min-width: 150px;
+  box-sizing: border-box;
+}
+
+.workdone-content .date-filter-input:focus {
+  outline: 2px solid #006db8;
+  outline-offset: -1px;
+}
+
+.workdone-content .date-filter-button {
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 6px 20px;
+  background: #006db8;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.workdone-content .date-filter-button:hover {
+  background: #005a9a;
+}
+
+.workdone-content .date-filter-button:active {
+  background: #004080;
+}
+
+.workdone-content .date-filter-button-clear {
+  background: #666;
+}
+
+.workdone-content .date-filter-button-clear:hover {
+  background: #555;
+}
+
+.workdone-content .date-filter-button-clear:active {
+  background: #444;
+}
+
+.workdone-content .table-container {
+  position: absolute;
+  left: 0;
+  top: 60px;
+  right: 20px;
+  height: 812px;
+}
+
+.workdone-content .table-wrapper {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border: 2px solid #006db8;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  /* Ensure flex children can shrink */
+  min-height: 0;
+}
+
+.workdone-content .table-header-wrapper {
+  overflow-x: auto; /* Allow scrolling but hide scrollbar */
+  overflow-y: hidden;
+  flex-shrink: 0;
+  border-bottom: 2px solid #006db8;
+  /* Hide scrollbar but keep scroll functionality */
+  scrollbar-width: none; /* Firefox - hide scrollbar */
+  -ms-overflow-style: none; /* IE and Edge - hide scrollbar */
+}
+
+.workdone-content .table-header-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera - hide scrollbar */
+  width: 0;
+  height: 0;
+}
+
+.workdone-content .table-header {
+  background: #006db8;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  border-radius: 18px 18px 0 0;
+  min-width: fit-content;
+  box-sizing: border-box;
+}
+
+.workdone-content .table-body-wrapper {
+  overflow-x: scroll; /* Changed from auto to scroll to always show */
+  overflow-y: scroll; /* Changed from auto to scroll to always show */
+  flex: 1;
+  width: 100%;
+  height: 0; /* Important: Set height to 0 so flex:1 works correctly */
+  min-height: 0; /* Important: Allow flex item to shrink below content size */
+  box-sizing: border-box;
+  /* Make scrollbars visible */
+  scrollbar-width: thin;
+  scrollbar-color: #006db8 #e0e0e0;
+}
+
+.workdone-content .table-body-wrapper::-webkit-scrollbar {
+  width: 15px; /* Increased width for better visibility */
+  height: 15px; /* Increased height for better visibility */
+  display: block !important; /* Force display */
+}
+
+.workdone-content .table-body-wrapper::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 6px;
+}
+
+.workdone-content .table-body-wrapper::-webkit-scrollbar-thumb {
+  background: #006db8;
+  border-radius: 6px;
+  min-width: 15px; /* Ensure minimum width */
+  min-height: 15px; /* Ensure minimum height */
+}
+
+.workdone-content .table-body-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #005a9a;
+}
+
+.workdone-content .table-body-wrapper::-webkit-scrollbar-corner {
+  background: #e0e0e0;
+}
+
+.workdone-content .th {
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: white;
+  text-align: center;
+  border-right: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.workdone-content .table-body {
+  min-width: fit-content;
+  width: 100%;
+  box-sizing: border-box;
+  /* Let content expand naturally - wrapper will handle scrolling */
+  display: block;
+}
+
+.workdone-content .tr {
+  display: flex;
+  align-items: stretch;
+  min-height: 38px;
+  border-bottom: 1px solid #b9b9b9;
+  min-width: fit-content;
+  width: 100%;
+}
+
+.workdone-content .tr:nth-child(odd) {
+  background: #eaf7fc;
+}
+
+.workdone-content .tr:nth-child(even) {
+  background: white;
+}
+
+.workdone-content .td {
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: black;
+  text-align: center;
+  border-right: 1px solid #b9b9b9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 4px 2px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  box-sizing: border-box;
+  line-height: 1.3;
+}
+
+.workdone-content .td-left {
+  text-align: left !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  padding-left: 8px;
+  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.workdone-content .scrollbar-container {
+  position: absolute;
+  right: 20px;
+  top: 150px;
+  width: 16px;
+  height: 683px;
+}
+
+.workdone-content #masterScrollbar {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #006db8 #e0e0e0;
+}
+
+.workdone-content #masterScrollbar::-webkit-scrollbar {
+  width: 15px;
+  display: block !important;
+}
+
+.workdone-content #masterScrollbar::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 6px;
+}
+
+.workdone-content #masterScrollbar::-webkit-scrollbar-thumb {
+  background: #006db8;
+  border-radius: 6px;
+  min-height: 15px;
+}
+
+.workdone-content #masterScrollbar::-webkit-scrollbar-thumb:hover {
+  background: #005a9a;
+}
+
+.workdone-content .scrollbar-content {
+  height: 950px;
+  width: 1px;
+}
+
+
+/* Input styling for editable columns */
+.workdone-content .done-by-input,
+.workdone-content .spares-input,
+.workdone-content .spares-select {
+  font-family: "Calibri", sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: black;
+  text-align: center;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 2px 4px;
+  box-sizing: border-box;
+}
+
+.workdone-content .done-by-input:focus,
+.workdone-content .spares-input:focus,
+.workdone-content .spares-select:focus {
+  outline: 2px solid #006db8;
+  outline-offset: -1px;
+}
+
+/* Dropdown specific styling */
+.workdone-content .spares-select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  padding-right: 20px;
+  width: 100% !important;
+  max-width: 200px; /* Match column width */
+  height: auto !important;
+  min-height: 30px;
+  max-height: 35px;
+  /* Prevent size attribute from being applied */
+  size: 1 !important;
+}

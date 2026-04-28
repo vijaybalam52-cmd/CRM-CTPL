@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Rapid-I - Customer List{% endblock %}
+{% block page_title %}Customer List{% endblock %}
+
+{% block nav_customer_list_active %}active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer_list.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="customer-list-content">
+    <div class="customer-list-toolbar">
+        <div class="toolbar-filters">
+            <label class="toolbar-filter-label" for="customerListFromSl">S.No From</label>
+            <input id="customerListFromSl" class="toolbar-filter-input" type="number" min="1" placeholder="From">
+            <label class="toolbar-filter-label" for="customerListToSl">To</label>
+            <input id="customerListToSl" class="toolbar-filter-input" type="number" min="1" placeholder="To">
+            <button id="applyCustomerListFilter" class="toolbar-button toolbar-button-secondary" type="button">Apply</button>
+            <button id="clearCustomerListFilter" class="toolbar-button toolbar-button-muted" type="button">Clear</button>
+        </div>
+        <div class="toolbar-actions">
+            <button id="refreshCustomerList" class="toolbar-button" type="button">Refresh</button>
+            <button id="printCustomerList" class="toolbar-button toolbar-button-export" type="button">Print</button>
+            <button id="printCustomerListCompact" class="toolbar-button toolbar-button-export" type="button">Print2</button>
+        </div>
+    </div>
+
+    <div class="customer-list-table-container">
+        <div class="customer-list-table-wrapper">
+            <div class="customer-list-header-wrapper">
+                <div class="customer-list-header" id="customerListHeader">
+                    <div class="th" style="width: 70px;">SI.</div>
+                    <div class="th" style="width: 280px;">Customer Name</div>
+                    <div class="th" style="width: 110px;">MC No</div>
+                    <div class="th" style="width: 130px;">Status</div>
+                    <div class="th" style="width: 160px;">GSTIN</div>
+                    <div class="th" style="width: 130px;">Invoice Date</div>
+                    <div class="th" style="width: 130px;">Invoice Value</div>
+                    <div class="th" style="width: 140px;">Invoice No</div>
+                    <div class="th" style="width: 130px;">Start Date</div>
+                    <div class="th" style="width: 130px;">End Date</div>
+                    <div class="th" style="width: 220px;">Contact Person</div>
+                    <div class="th" style="width: 180px;">Designation</div>
+                    <div class="th" style="width: 160px;">Contact Number</div>
+                    <div class="th" style="width: 220px;">Address 1</div>
+                    <div class="th" style="width: 220px;">Address 2</div>
+                    <div class="th" style="width: 220px;">Address 3</div>
+                    <div class="th" style="width: 150px;">City</div>
+                    <div class="th" style="width: 110px;">PIN</div>
+                    <div class="th" style="width: 140px;">State</div>
+                    <div class="th" style="width: 150px;">Country</div>
+                    <div class="th" style="width: 90px;">RG</div>
+                    <div class="th" style="width: 160px;">Cluster</div>
+                    <div class="th" style="width: 170px;">Security</div>
+                    <div class="th" style="width: 160px;">Weekly Off Start</div>
+                    <div class="th" style="width: 160px;">Weekly Off End</div>
+                    <div class="th" style="width: 170px;">Working Hours Start</div>
+                    <div class="th" style="width: 170px;">Working Hours End</div>
+                    <div class="th" style="width: 90px;">Zone (Z)</div>
+                    <div class="th" style="width: 90px;">Area (A)</div>
+                    <div class="th" style="width: 90px;">Route (R)</div>
+                    <div class="th" style="width: 110px; border-right: none;">Cluster (C)</div>
+                </div>
+            </div>
+            <div class="customer-list-body-wrapper" id="customerListBodyWrapper">
+                <div class="customer-list-body" id="customerListBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="customer-list-status" id="customerListStatus">Loading customer list...</div>
+ </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="{{ url_for('static', filename='js/customer_list.js') }}"></script>
+{% endblock %}

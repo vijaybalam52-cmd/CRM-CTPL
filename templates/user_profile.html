@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Rapid-I - User Profile{% endblock %}
+{% block page_title %}User Profile{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user-profile.css') }}">
+{% endblock %}
+
+{% block nav_login_dynamic_active %}active{% endblock %}
+
+{% block content %}
+<!-- Background -->
+<div class="userprof-bg"></div>
+
+<div class="userprof-card">
+    <div class="userprof-card-header">
+        <div class="userprof-card-header-text">Currently Logged In User</div>
+    </div>
+
+    <div class="userprof-card-body">
+        <div class="userprof-avatar">
+            <div id="userProfAvatarText" class="userprof-avatar-text">{{ current_user.tag_name or 'NA' }}</div>
+        </div>
+
+        <div class="userprof-grid">
+            <div class="userprof-field">
+                <div class="userprof-label">Full Name</div>
+                <div id="userProfName" class="userprof-input-like">{{ current_user.username or '-' }}</div>
+            </div>
+
+            <div class="userprof-field">
+                <div class="userprof-label">Role</div>
+                <div id="userProfRole" class="userprof-input-like">{{ current_user.role_name or '-' }}</div>
+            </div>
+
+            <div class="userprof-field">
+                <div class="userprof-label">Email Address</div>
+                <div id="userProfEmail" class="userprof-input-like">{{ current_user.email_id or '-' }}</div>
+            </div>
+
+            <div class="userprof-field">
+                <div class="userprof-label">Phone Number</div>
+                <div id="userProfPhone" class="userprof-input-like">{{ current_user.phone_no or '-' }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="userprof-logout-btn" href="{{ url_for('logout') }}">Logout</a>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Rapid-I Precision Measuring Systems{% endblock %}
+{% block page_id %}login{% endblock %}
+{% block scale_mode %}on{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block main_app_style %}style="display: none;"{% endblock %}
+
+{% block login_overlay %}
+<div class="login-overlay">
+    <div id="loginPage" class="login-page login-page-v2">
+        <div class="login-card-v2">
+            <!-- Top blue header with logo -->
+            <div class="login-card-header-v2">
+                <div class="login-card-logo-v2">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Rapid-I Logo" />
+                </div>
+            </div>
+
+            <!-- White content panel -->
+            <div class="login-card-body-v2">
+                <div class="login-welcome-v2">
+                    <h1>Welcome Back!</h1>
+                    <p>Sign in to continue</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    <div class="login-flash">
+                      {% for category, message in messages %}
+                        <div class="login-flash-item {{ category }}">{{ message }}</div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+                <!-- Form -->
+                <form id="loginForm" class="login-form-v2" method="post" action="{{ url_for('login_post') }}">
+                    <div class="form-group-v2">
+                        <label>Email / Username / Phone</label>
+                        <input type="text" name="login_id" placeholder="Enter email, username, or phone" required />
+                    </div>
+
+                    <div class="form-group-v2">
+                        <label>Password</label>
+                        <div class="password-field">
+                            <input type="password" name="password" placeholder="Enter your password" required />
+                            <button type="button" class="password-toggle" aria-label="Show password" data-visible="false">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M1.5 12s4-7 10.5-7 10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="login-buttons-row-v2">
+                        <button type="submit" class="btn-login-v2">Login</button>
+                        <button type="reset" class="btn-cancel-v2">Cancel</button>
+                    </div>
+                </form>
+
+                <div class="login-footer-v2">
+                    Rapid-I Precision Measuring Systems (c) 2026
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
