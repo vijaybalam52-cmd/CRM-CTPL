@@ -105,7 +105,7 @@ def get_customer_list():
                   AND cl.r = CAST(c.route AS UNSIGNED)
                   AND cl.c = CAST(c.cluster AS UNSIGNED)
             
-            ORDER BY c.name ASC, m.mc_no ASC, cont.name ASC
+            ORDER BY m.Inv_Dt ASC, m.mc_no ASC
         """
         cur.execute(query)
         rows = cur.fetchall() or []
@@ -174,3 +174,4 @@ def get_customer_list():
                 cnx.close()
         except Exception:
             pass
+ 

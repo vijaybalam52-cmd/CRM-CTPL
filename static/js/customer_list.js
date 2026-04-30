@@ -35,6 +35,47 @@ const customerListColumns = [
 let customerListRows = [];
 let allCustomerListRows = [];
 
+function renumberCustomerListRows() {
+    customerListRows = customerListRows.map((row, index) => ({
+        ...row,
+        sl: String(index + 1)
+    }));
+}
+
+function parseCustomerListDate(dateText) {
+    if (!dateText) return null;
+
+    const normalizedDate = String(dateText).trim();
+    const isoMatch = normalizedDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (isoMatch) {
+        return new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
+    }
+
+    const displayMatch = normalizedDate.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{2}|\d{4})$/);
+    if (!displayMatch) return null;
+
+    const monthLookup = {
+        jan: 0,
+        feb: 1,
+        mar: 2,
+        apr: 3,
+        may: 4,
+        jun: 5,
+        jul: 6,
+        aug: 7,
+        sep: 8,
+        oct: 9,
+        nov: 10,
+        dec: 11
+    };
+    const month = monthLookup[displayMatch[2].toLowerCase()];
+    if (month === undefined) return null;
+
+    const yearText = displayMatch[3];
+    const year = yearText.length === 2 ? 2000 + Number(yearText) : Number(yearText);
+    return new Date(year, month, Number(displayMatch[1]));
+}
+
 function updateCustomerListStatus(message, isError = false) {
     const statusEl = document.getElementById('customerListStatus');
     if (!statusEl) return;
@@ -49,6 +90,7 @@ function updateCustomerListCount() {
 function renderCustomerList() {
     const body = document.getElementById('customerListBody');
     if (!body) return;
+    renumberCustomerListRows();
 
     if (!customerListRows.length) {
         body.innerHTML = '<div class="customer-list-empty">No customer rows found.</div>';
@@ -99,15 +141,16 @@ async function fetchCustomerList() {
 }
 
 function applyCustomerListFilter() {
-    const fromInput = document.getElementById('customerListFromSl');
-    const toInput = document.getElementById('customerListToSl');
-    const fromValue = fromInput ? parseInt(fromInput.value, 10) : NaN;
-    const toValue = toInput ? parseInt(toInput.value, 10) : NaN;
+    const fromInput = document.getElementById('customerListFromInvoiceDate');
+    const toInput = document.getElementById('customerListToInvoiceDate');
+    const fromDate = fromInput && fromInput.value ? parseCustomerListDate(fromInput.value) : null;
+    const toDate = toInput && toInput.value ? parseCustomerListDate(toInput.value) : null;
 
     customerListRows = allCustomerListRows.filter((row) => {
-        const sl = parseInt(row.sl, 10);
-        if (!Number.isNaN(fromValue) && sl < fromValue) return false;
-        if (!Number.isNaN(toValue) && sl > toValue) return false;
+        const invoiceDate = parseCustomerListDate(row.invoice_date);
+        if (!invoiceDate) return !fromDate && !toDate;
+        if (fromDate && invoiceDate < fromDate) return false;
+        if (toDate && invoiceDate > toDate) return false;
         return true;
     });
 
@@ -115,8 +158,8 @@ function applyCustomerListFilter() {
 }
 
 function clearCustomerListFilter() {
-    const fromInput = document.getElementById('customerListFromSl');
-    const toInput = document.getElementById('customerListToSl');
+    const fromInput = document.getElementById('customerListFromInvoiceDate');
+    const toInput = document.getElementById('customerListToInvoiceDate');
     if (fromInput) fromInput.value = '';
     if (toInput) toInput.value = '';
     customerListRows = [...allCustomerListRows];
@@ -128,6 +171,7 @@ async function exportCustomerListToExcel() {
         updateCustomerListStatus('No rows available to export.', true);
         return;
     }
+    renumberCustomerListRows();
 
     try {
         const workbook = new ExcelJS.Workbook();
@@ -179,9 +223,9 @@ async function exportCustomerListToExcel() {
             };
         });
 
-        customerListRows.forEach((row) => {
+        customerListRows.forEach((row, index) => {
             const excelRow = worksheet.addRow([
-                row.sl || '',
+                String(index + 1),
                 row.customer_name || '',
                 row.mc_no || '',
                 row.status || '',
@@ -252,6 +296,7 @@ async function exportCustomerListCompactToExcel() {
         updateCustomerListStatus('No rows available to export.', true);
         return;
     }
+    renumberCustomerListRows();
 
     try {
         const workbook = new ExcelJS.Workbook();
@@ -291,9 +336,9 @@ async function exportCustomerListCompactToExcel() {
             };
         });
 
-        customerListRows.forEach((row) => {
+        customerListRows.forEach((row, index) => {
             const excelRow = worksheet.addRow({
-                sl: row.sl || '',
+                sl: String(index + 1),
                 customer_name: row.customer_name || '',
                 mc_no: row.mc_no || '',
                 model: row.model || '',

@@ -25,6 +25,16 @@ function getTotalRows() {
     return Math.max(totalRows, tableData.length);
 }
 
+function renumberTableRows() {
+    let serial = 1;
+    for (let i = 0; i < tableData.length; i++) {
+        if (tableData[i]) {
+            tableData[i].sl = String(serial);
+            serial += 1;
+        }
+    }
+}
+
 let mainTableBody;
 let sprBody;
 let prBody;
@@ -55,7 +65,7 @@ async function fetchWorkfrontData() {
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
             tableData.push({
-                sl: row.sl || String(i + 1),
+                sl: String(i + 1),
                 date: row.date || '',
                 mc: row.mc || '',
                 ticket_no: row.ticket_no || '',
@@ -87,6 +97,7 @@ async function fetchWorkfrontData() {
         
         // Load PR values from localStorage (temporary storage, not database)
         loadPrValuesFromStorage();
+        renumberTableRows();
         
         saveOriginalOrder();
         console.log('Workfront data processed successfully');
@@ -107,6 +118,7 @@ async function fetchWorkfrontData() {
 }
 
 function saveOriginalOrder() {
+    renumberTableRows();
     originalTableData = tableData.map(r => r ? { ...r } : null);
     originalRowIds = [...rowIds];
     originalSprValues = [...sprValues];
@@ -207,13 +219,14 @@ function sortByZarc() {
     
     for (let i = 0; i < total; i++) {
         const item = combined[i];
-        tableData[i] = item.row ? { ...item.row, sl: String(i + 1) } : null;
+        tableData[i] = item.row ? { ...item.row } : null;
         rowIds[i] = item.rowId;
         sprValues[i] = item.spr;
         prValues[i] = item.pr;
         doneValues[i] = item.done;
         statusValues[i] = item.status;
     }
+    renumberTableRows();
     isSortedByZarc = true;
     // Keep F/T button states - don't reset them
 }
@@ -225,6 +238,7 @@ function restoreOriginalOrder() {
     prValues = [...originalPrValues];
     doneValues = [...originalDoneValues];
     statusValues = [...originalStatusValues];
+    renumberTableRows();
     isSortedByZarc = false;
     psortState = 'none';
     // Remove active states from all buttons
@@ -288,13 +302,14 @@ function sortByF() {
     });
     for (let i = 0; i < total; i++) {
         const item = combined[i];
-        tableData[i] = item.row ? { ...item.row, sl: String(i + 1) } : null;
+        tableData[i] = item.row ? { ...item.row } : null;
         rowIds[i] = item.rowId;
         sprValues[i] = item.spr;
         prValues[i] = item.pr;
         doneValues[i] = item.done;
         statusValues[i] = item.status;
     }
+    renumberTableRows();
     psortState = 'F';
     isSortedByZarc = false;
 }
@@ -351,13 +366,14 @@ function sortByT() {
     });
     for (let i = 0; i < total; i++) {
         const item = combined[i];
-        tableData[i] = item.row ? { ...item.row, sl: String(i + 1) } : null;
+        tableData[i] = item.row ? { ...item.row } : null;
         rowIds[i] = item.rowId;
         sprValues[i] = item.spr;
         prValues[i] = item.pr;
         doneValues[i] = item.done;
         statusValues[i] = item.status;
     }
+    renumberTableRows();
     psortState = 'T';
     isSortedByZarc = false;
 }
@@ -527,6 +543,7 @@ function syncSprPrHeights() {
 }
 
 function renderMainTable() {
+    renumberTableRows();
     mainTableBody.innerHTML = '';
     const tableTotalRow = document.getElementById('tableTotalRow');
     if (tableTotalRow) tableTotalRow.innerHTML = '';
@@ -721,6 +738,7 @@ function removeRowFromDisplay(rowIndex) {
     
     // Update total rows
     totalRows = tableData.length;
+    renumberTableRows();
     
     // Re-render table
     renderMainTable();

@@ -49,6 +49,10 @@
   box-sizing: border-box;
 }
 
+.toolbar-filter-date-input {
+  width: 145px;
+}
+
 .toolbar-filter-input:focus {
   outline: 2px solid #006db8;
   outline-offset: -1px;

@@ -20,6 +20,16 @@ function getTotalRows() {
     return Math.max(totalRows, tableData.length);
 }
 
+function renumberTableRows() {
+    let serial = 1;
+    for (let i = 0; i < tableData.length; i++) {
+        if (tableData[i]) {
+            tableData[i].sl = String(serial);
+            serial += 1;
+        }
+    }
+}
+
 let mainTableBody;
 let masterScrollbar;
 let tableContainer;
@@ -116,6 +126,7 @@ async function fetchWorkdoneData() {
 }
 
 function saveOriginalOrder() {
+    renumberTableRows();
     originalTableData = tableData.map(r => r ? { ...r } : null);
     originalRowIds = [...rowIds];
 }
@@ -153,13 +164,10 @@ function applyDateFilter() {
     
     // If no filter is set, use all data
     if (!dateFilterFrom && !dateFilterTo) {
-        tableData = allTableData.map((r, index) => ({ ...r, sl: String(index + 1) }));
+        tableData = allTableData.map((r) => ({ ...r }));
         rowIds = [...allRowIds];
         totalRows = tableData.length;
-        // Ensure SI numbers are sequential
-        for (let i = 0; i < tableData.length; i++) {
-            tableData[i].sl = String(i + 1);
-        }
+        renumberTableRows();
         return;
     }
     
@@ -199,10 +207,7 @@ function applyDateFilter() {
     }
     
     totalRows = tableData.length;
-    // Update SL numbers
-    for (let i = 0; i < tableData.length; i++) {
-        tableData[i].sl = String(i + 1);
-    }
+    renumberTableRows();
 }
 
 function setupDateFilter() {
@@ -221,6 +226,7 @@ function setupDateFilter() {
         dateFilterTo = toDateInput.value || null;
         
         applyDateFilter();
+        saveOriginalOrder();
         renderMainTable();
     });
     
@@ -231,6 +237,7 @@ function setupDateFilter() {
         dateFilterTo = null;
         
         applyDateFilter();
+        saveOriginalOrder();
         renderMainTable();
     });
 }
@@ -238,6 +245,7 @@ function setupDateFilter() {
 // Export filtered table to Excel with borders
 async function exportFaultInvToExcel() {
     try {
+        renumberTableRows();
         // Create a new workbook using ExcelJS
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Fault Inventory');
@@ -591,9 +599,10 @@ function sortByZarc() {
     combined.sort((a, b) => a.zarcVal - b.zarcVal);
     for (let i = 0; i < total; i++) {
         const item = combined[i];
-        tableData[i] = item.row ? { ...item.row, sl: String(i + 1) } : null;
+        tableData[i] = item.row ? { ...item.row } : null;
         rowIds[i] = item.rowId;
     }
+    renumberTableRows();
     isSortedByZarc = true;
     psortState = 'none';
     // Reset psort button text
@@ -608,6 +617,7 @@ function sortByZarc() {
 function restoreOriginalOrder() {
     tableData = originalTableData.map(r => r ? { ...r } : null);
     rowIds = [...originalRowIds];
+    renumberTableRows();
     isSortedByZarc = false;
     psortState = 'none';
     // Remove active states from both buttons
@@ -661,9 +671,10 @@ function sortByF() {
     });
     for (let i = 0; i < total; i++) {
         const item = combined[i];
-        tableData[i] = item.row ? { ...item.row, sl: String(i + 1) } : null;
+        tableData[i] = item.row ? { ...item.row } : null;
         rowIds[i] = item.rowId;
     }
+    renumberTableRows();
     psortState = 'F';
     isSortedByZarc = false;
 }
@@ -708,9 +719,10 @@ function sortByT() {
     });
     for (let i = 0; i < total; i++) {
         const item = combined[i];
-        tableData[i] = item.row ? { ...item.row, sl: String(i + 1) } : null;
+        tableData[i] = item.row ? { ...item.row } : null;
         rowIds[i] = item.rowId;
     }
+    renumberTableRows();
     psortState = 'T';
     isSortedByZarc = false;
 }
@@ -816,6 +828,7 @@ function updateScrollbarHeight() {
 }
 
 function renderMainTable() {
+    renumberTableRows();
     mainTableBody.innerHTML = '';
     const total = getTotalRows();
     for (let i = 0; i < total; i++) {
