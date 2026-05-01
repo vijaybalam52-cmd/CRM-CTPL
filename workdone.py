@@ -23,7 +23,7 @@ def get_workdone():
         # Use normalized schema: join work_done -> work_front -> ticket_issues -> tickets -> machines -> companies -> short_form -> cluster -> contacts
         query = """
                  SELECT wd.id AS id,
-                     wd.done_date AS date,
+                     ti.date AS date,
                      wd.done_by AS done_by,
                    m.mc_no AS mc_no,
                    comp.name AS company,
