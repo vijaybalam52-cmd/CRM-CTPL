@@ -696,7 +696,7 @@ async function transferSingleRowToWorkDone(rowIndex) {
         if (data.success) {
             // Status is already updated to 'done' in backend during transfer
             // Show success message
-            alert('Successfully done! Record transferred to Work Done. Redirecting to Work Done page...');
+            
             
             // Redirect to work done page
             window.location.href = '/workdone';
