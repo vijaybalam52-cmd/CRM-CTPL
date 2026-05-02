@@ -182,6 +182,107 @@ def company_details(company_id):
             pass
 
 
+@call_entry_bp.route("/api/company/<int:company_id>", methods=["PUT"])
+def update_company(company_id):
+    """Update company details from the Call Entry form."""
+    data = request.get_json(silent=True) or {}
+
+    def clean_text(key):
+        value = data.get(key)
+        if value is None:
+            return None
+        value = str(value).strip()
+        return value or None
+
+    def to_int_or_none(value):
+        if value is None or value == "":
+            return None
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    cnx = cur = None
+    try:
+        cnx = get_connection(DB_CONFIG)
+        cur = cnx.cursor(dictionary=True)
+
+        security_id = to_int_or_none(data.get("company_security_id"))
+        security_text = clean_text("company_security")
+        if security_id is None and security_text:
+            cur.execute(
+                "SELECT id FROM security_options WHERE LOWER(security_option) = LOWER(%s) LIMIT 1",
+                (security_text,),
+            )
+            security_row = cur.fetchone()
+            security_id = security_row.get("id") if security_row else None
+
+        update_sql = """
+            UPDATE companies
+            SET name = %s,
+                address1 = %s,
+                address2 = %s,
+                address3 = %s,
+                city = %s,
+                state = %s,
+                pin = %s,
+                country = %s,
+                route = %s,
+                zone = %s,
+                area = %s,
+                cluster = %s,
+                gstin = %s,
+                weekly_off_start = %s,
+                weekly_off_end = %s,
+                working_hrs_start = %s,
+                working_hrs_end = %s,
+                security = %s
+            WHERE id = %s
+        """
+        values = (
+            clean_text("company_name"),
+            clean_text("company_street"),
+            clean_text("company_area"),
+            clean_text("company_address3"),
+            clean_text("company_city"),
+            clean_text("company_state"),
+            clean_text("company_pin"),
+            clean_text("company_country"),
+            clean_text("company_route"),
+            clean_text("company_zone"),
+            clean_text("company_area_zarc"),
+            clean_text("company_cluster"),
+            clean_text("company_gstin"),
+            clean_text("company_weekly_off_start"),
+            clean_text("company_weekly_off_end"),
+            clean_text("company_working_hrs_start"),
+            clean_text("company_working_hrs_end"),
+            security_id,
+            company_id,
+        )
+        cur.execute(update_sql, values)
+        if cur.rowcount == 0:
+            cur.execute("SELECT id FROM companies WHERE id = %s", (company_id,))
+            if not cur.fetchone():
+                cnx.rollback()
+                return jsonify({"error": "Company not found"}), 404
+
+        cnx.commit()
+        return jsonify({"message": "Company updated successfully", "company_id": company_id})
+    except Error as exc:
+        if cnx:
+            cnx.rollback()
+        return jsonify({"error": str(exc)}), 500
+    finally:
+        try:
+            if cur:
+                cur.close()
+            if cnx:
+                cnx.close()
+        except Exception:
+            pass
+
+
 @call_entry_bp.route("/api/machine-suggest")    
 def machine_suggest():
     """Return machine suggestions by mc_no once user types at least 2 chars."""
@@ -390,6 +491,7 @@ def machine_details(machine_id):
                 "weekly_off_end": machine.get("weekly_off_end"),
                 "working_hrs_start": machine.get("working_hrs_start"),
                 "working_hrs_end": machine.get("working_hrs_end"),
+                "security_id": machine.get("security_id"),
                 "security": machine.get("security"),
             },
             "contacts": contacts,

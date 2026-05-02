@@ -36,26 +36,21 @@
     <input id="address3Input" type="text" class="form-input-box address3-input" />
     
     <div class="form-label city-label">City</div>
-    <select id="citySelect" class="form-dropdown city-dropdown">
-        <option> Select </option>
-    </select>
-    <img src="{{ url_for('static', filename='images/arrow-down.png') }}" class="dropdown-arrow-small city-arrow" />
+    <input id="citySelect" type="text" class="form-dropdown city-dropdown" list="cityListMain" autocomplete="off" />
+    <datalist id="cityListMain"></datalist>
     
     <div class="form-label pincode-label">Pin Code</div>
     <input id="pinInput" type="text" class="form-dropdown pincode-dropdown" />
     
     <div class="form-label state-label">State</div>
-    <select id="stateSelect" class="form-dropdown state-dropdown">
-        <option> Select </option>
-    </select>
-    <img src="{{ url_for('static', filename='images/arrow-down.png') }}" class="dropdown-arrow-small state-arrow" />
+    <input id="stateSelect" type="text" class="form-dropdown state-dropdown" list="stateListMain" autocomplete="off" />
+    <datalist id="stateListMain"></datalist>
     
     <div class="form-label country-label">Country</div>
     <input id="countrySelect" type="text" class="form-input-box country-input" list="countryListMain" autocomplete="off" />
     <datalist id="countryListMain">
         <option value="India"></option>
     </datalist>
-    <img src="{{ url_for('static', filename='images/arrow-down.png') }}" class="dropdown-arrow-small country-arrow" />
     
     <div class="form-label mcno-label">Mc No Search</div>
     <input id="machineInput" type="text" list="machineList" class="form-input-box mcno-input" autocomplete="off" />
@@ -109,26 +104,30 @@
     <div class="form-label upto-label">Upto</div>
     <div class="work-time-dropdown work-from">
         <div class="work-time-bg"></div>
-        <input id="workingStart" type="text" class="work-time-input" placeholder="09:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" />
+        <input id="workingStart" type="text" class="work-time-input" placeholder="09:00 AM" maxlength="8" />
     </div>
     <div class="work-time-dropdown work-to">   
         <div class="work-time-bg"></div>
-        <input id="workingEnd" type="text" class="work-time-input" placeholder="17:00" pattern="^([0-1][0-9]|2[0-3]):[0-5][0-9]$" maxlength="5" />
+        <input id="workingEnd" type="text" class="work-time-input" placeholder="05:00 PM" maxlength="8" />
     </div>
     
     <div class="form-label security-label">Security Reqd</div>
     <div class="security-dropdown-container">
-        <input id="securitySelect" class="security-dropdown-main">
-            
-        </input>
-        <div class="security-dropdown-arrow-box">
-            <img src="{{ url_for('static', filename='images/arrow-down.png') }}" class="security-dropdown-arrow" />
-        </div>
+        <select id="securitySelect" class="security-dropdown-main">
+            <option value="">Select</option>
+            {% for opt in security_options %}
+                <option value="{{ opt.id }}">{{ opt.security_option }}</option>
+            {% endfor %}
+        </select>
     </div>
     
     <div class="action-button add-new-button" onclick="showAddNewModal()">
         <div class="button-background"></div>
         <div class="button-text">Add New</div>
+    </div>
+    <div class="action-button edit-button">
+        <div class="button-background"></div>
+        <div class="button-text">Edit</div>
     </div>
     <div class="action-button submit-button">
         <div class="button-background"></div>

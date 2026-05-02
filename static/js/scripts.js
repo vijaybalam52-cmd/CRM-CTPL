@@ -549,6 +549,7 @@ document.getElementById('addNewEntryForm')?.addEventListener('submit', async fun
 // Store current company and machine IDs for New Contact form
 let currentCompanyId = null;
 let currentMachineId = null;
+let isCompanyEditMode = false;
 
 // Store selected machine and contact for ticket creation
 let selectedMachine = null;
@@ -703,12 +704,6 @@ document.getElementById('machineInvValue')?.addEventListener('input', function(e
     }
 });
 
-// Main Submit Button
-document.querySelector('.submit-button')?.addEventListener('click', function(e) {
-    e.preventDefault();
-    alert('Company information submitted successfully!');
-});
-
 // ============================================
 // Console Info
 // ============================================
@@ -727,7 +722,15 @@ function debounce(fn, delay = 250) {
 }
 
 function setSelectValue(select, value) {
-    if (!select || !value) return;
+    if (!select) return;
+    if (select.tagName !== 'SELECT') {
+        select.value = value || '';
+        return;
+    }
+    if (!value) {
+        select.value = '';
+        return;
+    }
     const match = Array.from(select.options).find(
         (opt) => opt.value.toLowerCase() === String(value).toLowerCase() || opt.textContent.toLowerCase() === String(value).toLowerCase()
     );
@@ -742,8 +745,157 @@ function setSelectValue(select, value) {
     select.appendChild(opt);
 }
 
+const companyDetailFieldIds = [
+    'streetInput',
+    'localityInput',
+    'address3Input',
+    'citySelect',
+    'pinInput',
+    'stateSelect',
+    'countrySelect',
+    'zoneInput',
+    'areaInput',
+    'routeInput',
+    'clusterInput',
+    'gstInput',
+    'weeklyOffStart',
+    'weeklyOffEnd',
+    'workingStart',
+    'workingEnd',
+    'securitySelect',
+];
+const companySearchFieldIds = ['companyInput', 'machineInput'];
+
+function setWorkingHoursInputMode(enabled) {
+    ['workingStart', 'workingEnd'].forEach((id) => {
+        const field = document.getElementById(id);
+        if (!field) return;
+        field.type = 'text';
+        field.inputMode = 'none';
+        field.maxLength = 8;
+        field.placeholder = id === 'workingStart' ? '09:00 AM' : '05:00 PM';
+    });
+}
+
+let activeTimeInput = null;
+let timePickerPanel = null;
+
+function findSecurityOptionByValue(value) {
+    if (!value) return null;
+    return Array.from(document.querySelectorAll('#securitySelect option'))
+        .find((option) => option.value === value) || null;
+}
+
+function toDisplayTime(value) {
+    if (!value) return '';
+    const ampmMatch = String(value).trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (ampmMatch) {
+        return `${ampmMatch[1].padStart(2, '0')}:${ampmMatch[2]} ${ampmMatch[3].toUpperCase()}`;
+    }
+
+    const parts = String(value).split(':');
+    if (parts.length < 2) return '';
+    let hours = parseInt(parts[0], 10);
+    const minutes = String(parseInt(parts[1], 10) || 0).padStart(2, '0');
+    if (Number.isNaN(hours)) return '';
+    const period = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    if (hours === 0) hours = 12;
+    return `${String(hours).padStart(2, '0')}:${minutes} ${period}`;
+}
+
+function toRailwayTime(value) {
+    if (!value) return '';
+    const ampmMatch = String(value).trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (ampmMatch) {
+        let hours = parseInt(ampmMatch[1], 10);
+        const minutes = String(parseInt(ampmMatch[2], 10) || 0).padStart(2, '0');
+        const period = ampmMatch[3].toUpperCase();
+        if (period === 'AM' && hours === 12) hours = 0;
+        if (period === 'PM' && hours !== 12) hours += 12;
+        return `${String(hours).padStart(2, '0')}:${minutes}`;
+    }
+
+    const parts = String(value).split(':');
+    if (parts.length < 2) return '';
+    const hours = Math.min(Math.max(parseInt(parts[0], 10) || 0, 0), 23);
+    const minutes = Math.min(Math.max(parseInt(parts[1], 10) || 0, 0), 59);
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+function setCompanyEditMode(enabled) {
+    isCompanyEditMode = Boolean(enabled);
+    const form = document.querySelector('.company-form');
+    form?.classList.toggle('company-editing', isCompanyEditMode);
+    setWorkingHoursInputMode(isCompanyEditMode);
+    if (!isCompanyEditMode) hideTimePicker();
+
+    companySearchFieldIds.forEach((id) => {
+        const field = document.getElementById(id);
+        if (!field) return;
+        field.disabled = false;
+        field.readOnly = false;
+        field.classList.add('company-search-field');
+        field.classList.remove('company-edit-field');
+    });
+
+    companyDetailFieldIds.forEach((id) => {
+        const field = document.getElementById(id);
+        if (!field) return;
+
+        if (field.tagName === 'SELECT') {
+            field.disabled = !isCompanyEditMode;
+        } else {
+            field.readOnly = !isCompanyEditMode;
+            field.disabled = false;
+        }
+
+        if (id === 'workingStart' || id === 'workingEnd') {
+            field.readOnly = true;
+        }
+
+        field.classList.toggle('company-edit-field', isCompanyEditMode);
+        field.classList.toggle('company-readonly-field', !isCompanyEditMode);
+    });
+}
+
+function setCompanyActionState() {
+    const hasCompany = Boolean(currentCompanyId);
+    document.querySelector('.edit-button')?.classList.toggle('is-disabled', !hasCompany);
+    document.querySelector('.submit-button')?.classList.toggle('is-disabled', !hasCompany || !isCompanyEditMode);
+}
+
+function getCompanyUpdatePayload() {
+    const securitySelect = document.getElementById('securitySelect');
+    const selectedSecurityOption = securitySelect?.selectedOptions?.[0] || null;
+    const securityId = securitySelect?.value || '';
+    const securityValue = securityId ? (selectedSecurityOption?.textContent || '') : '';
+    return {
+        company_name: document.getElementById('companyInput')?.value || '',
+        company_street: document.getElementById('streetInput')?.value || '',
+        company_area: document.getElementById('localityInput')?.value || '',
+        company_address3: document.getElementById('address3Input')?.value || '',
+        company_city: document.getElementById('citySelect')?.value || '',
+        company_state: document.getElementById('stateSelect')?.value || '',
+        company_pin: document.getElementById('pinInput')?.value || '',
+        company_country: document.getElementById('countrySelect')?.value || '',
+        company_zone: document.getElementById('zoneInput')?.value || '',
+        company_area_zarc: document.getElementById('areaInput')?.value || '',
+        company_route: document.getElementById('routeInput')?.value || '',
+        company_cluster: document.getElementById('clusterInput')?.value || '',
+        company_gstin: document.getElementById('gstInput')?.value || '',
+        company_weekly_off_start: document.getElementById('weeklyOffStart')?.value || '',
+        company_weekly_off_end: document.getElementById('weeklyOffEnd')?.value || '',
+        company_working_hrs_start: toRailwayTime(document.getElementById('workingStart')?.value || ''),
+        company_working_hrs_end: toRailwayTime(document.getElementById('workingEnd')?.value || ''),
+        company_security: securityValue,
+        company_security_id: securityId,
+    };
+}
+
 function fillCompanyFields(company = {}) {
     const {
+        id,
         name,
         address1,
         address2,
@@ -762,47 +914,36 @@ function fillCompanyFields(company = {}) {
         working_hrs_start,
         working_hrs_end,
         security,
+        security_id,
     } = company;
 
-    if (name) {
-        const companyInput = document.getElementById('companyInput');
-        if (companyInput) {
-            // Set the company name in the input field
-            companyInput.value = name;
-        }
+    const companyInput = document.getElementById('companyInput');
+    if (companyInput) {
+        companyInput.value = name || '';
+        if (id) companyInput.dataset.companyId = id;
     }
     // Map address1 to streetInput (Address 1 field)
-    if (address1) document.getElementById('streetInput').value = address1;
+    document.getElementById('streetInput').value = address1 || '';
     // Map address2 to localityInput (Address 2 field)
-    if (address2) document.getElementById('localityInput').value = address2;
+    document.getElementById('localityInput').value = address2 || '';
     // Map address3 to address3Input (Address 3 field) if it exists
     const address3Input = document.getElementById('address3Input');
-    if (address3Input && address3) address3Input.value = address3;
-    if (pin) document.getElementById('pinInput').value = pin;
+    if (address3Input) address3Input.value = address3 || '';
+    document.getElementById('pinInput').value = pin || '';
 
     // Fill ZARC fields: Z -> zone, A -> area, R -> route, C -> cluster
-    if (zone) {
-        const zoneInput = document.getElementById('zoneInput');
-        if (zoneInput) zoneInput.value = zone;
-    }
-    if (area) {
-        const areaInput = document.getElementById('areaInput');
-        if (areaInput) areaInput.value = area;
-    }
-    if (route) {
-        const routeInput = document.getElementById('routeInput');
-        if (routeInput) routeInput.value = route;
-    }
-    if (cluster) {
-        const clusterInput = document.getElementById('clusterInput');
-        if (clusterInput) clusterInput.value = cluster;
-    }
+    const zoneInput = document.getElementById('zoneInput');
+    if (zoneInput) zoneInput.value = zone || '';
+    const areaInput = document.getElementById('areaInput');
+    if (areaInput) areaInput.value = area || '';
+    const routeInput = document.getElementById('routeInput');
+    if (routeInput) routeInput.value = route || '';
+    const clusterInput = document.getElementById('clusterInput');
+    if (clusterInput) clusterInput.value = cluster || '';
 
     // Fill GSTIN
-    if (gstin) {
-        const gstInput = document.getElementById('gstInput');
-        if (gstInput) gstInput.value = gstin;
-    }
+    const gstInput = document.getElementById('gstInput');
+    if (gstInput) gstInput.value = gstin || '';
 
     setSelectValue(document.getElementById('citySelect'), city);
     setSelectValue(document.getElementById('stateSelect'), state);
@@ -814,9 +955,9 @@ function fillCompanyFields(company = {}) {
     setSelectValue(document.getElementById('weeklyOffStart'), weekly_off_start);
     setSelectValue(document.getElementById('weeklyOffEnd'), weekly_off_end);
     // Format working hours to HH:MM (24-hour format)
-    if (working_hrs_start) {
-        const startInput = document.getElementById('workingStart');
-        if (startInput) {
+    const startInput = document.getElementById('workingStart');
+    if (startInput) {
+        if (working_hrs_start) {
             let startTime = working_hrs_start;
             // Ensure HH:MM format
             if (startTime.includes(':')) {
@@ -828,12 +969,14 @@ function fillCompanyFields(company = {}) {
                 // If format is HHMM, convert to HH:MM
                 startTime = startTime.substring(0, 2) + ':' + startTime.substring(2, 4);
             }
-            startInput.value = startTime;
+            startInput.value = toDisplayTime(startTime);
+        } else {
+            startInput.value = '';
         }
     }
-    if (working_hrs_end) {
-        const endInput = document.getElementById('workingEnd');
-        if (endInput) {
+    const endInput = document.getElementById('workingEnd');
+    if (endInput) {
+        if (working_hrs_end) {
             let endTime = working_hrs_end;
             // Ensure HH:MM format
             if (endTime.includes(':')) {
@@ -845,15 +988,143 @@ function fillCompanyFields(company = {}) {
                 // If format is HHMM, convert to HH:MM
                 endTime = endTime.substring(0, 2) + ':' + endTime.substring(2, 4);
             }
-            endInput.value = endTime;
+            endInput.value = toDisplayTime(endTime);
+        } else {
+            endInput.value = '';
         }
     }
-    // Handle security field - it's now an input, not a select
-    const securityInput = document.getElementById('securitySelect');
-    if (securityInput && security) {
-        securityInput.value = security;
+    const securitySelect = document.getElementById('securitySelect');
+    if (securitySelect) {
+        securitySelect.value = security_id || '';
+        if (!securitySelect.value && security) {
+            const matchingOption = Array.from(securitySelect.options)
+                .find((option) => option.textContent.trim().toLowerCase() === String(security).trim().toLowerCase());
+            if (matchingOption) securitySelect.value = matchingOption.value;
+        }
     }
 }
+
+document.querySelector('.edit-button')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (!currentCompanyId) {
+        alert('Please select a company first.');
+        return;
+    }
+    setCompanyEditMode(!isCompanyEditMode);
+    setCompanyActionState();
+});
+
+function buildTimeSelect(className, values, visibleRows = 6) {
+    const select = document.createElement('select');
+    select.className = className;
+    select.size = Math.min(values.length, visibleRows);
+    values.forEach((value) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+    });
+    return select;
+}
+
+function ensureTimePicker() {
+    if (timePickerPanel) return timePickerPanel;
+
+    timePickerPanel = document.createElement('div');
+    timePickerPanel.className = 'time-picker-panel';
+
+    const hours = buildTimeSelect('time-picker-hour', Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')), 6);
+    const minutes = buildTimeSelect('time-picker-minute', Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')), 6);
+    const period = buildTimeSelect('time-picker-period', ['AM', 'PM'], 2);
+    const apply = document.createElement('button');
+    apply.type = 'button';
+    apply.className = 'time-picker-apply';
+    apply.textContent = 'Set';
+    apply.addEventListener('mousedown', (event) => {
+        event.preventDefault();
+        if (activeTimeInput) {
+            activeTimeInput.value = `${hours.value}:${minutes.value} ${period.value}`;
+            activeTimeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        hideTimePicker();
+    });
+
+    timePickerPanel.append(hours, minutes, period, apply);
+    document.body.appendChild(timePickerPanel);
+    return timePickerPanel;
+}
+
+function showTimePicker(input) {
+    if (!isCompanyEditMode) return;
+    activeTimeInput = input;
+    const panel = ensureTimePicker();
+    const normalizedValue = toDisplayTime(input.value) || (input.id === 'workingStart' ? '09:00 AM' : '05:00 PM');
+    const match = normalizedValue.match(/^(\d{2}):(\d{2})\s(AM|PM)$/);
+    if (match) {
+        panel.querySelector('.time-picker-hour').value = match[1];
+        panel.querySelector('.time-picker-minute').value = match[2];
+        panel.querySelector('.time-picker-period').value = match[3];
+    }
+
+    const rect = input.getBoundingClientRect();
+    panel.style.left = `${rect.left + window.scrollX}px`;
+    panel.style.top = `${rect.bottom + window.scrollY + 2}px`;
+    panel.classList.add('show');
+}
+
+function hideTimePicker() {
+    timePickerPanel?.classList.remove('show');
+    activeTimeInput = null;
+}
+
+['workingStart', 'workingEnd'].forEach((id) => {
+    const field = document.getElementById(id);
+    field?.addEventListener('click', () => showTimePicker(field));
+    field?.addEventListener('focus', () => showTimePicker(field));
+});
+
+document.addEventListener('mousedown', (event) => {
+    if (!timePickerPanel?.classList.contains('show')) return;
+    if (timePickerPanel.contains(event.target) || event.target === activeTimeInput) return;
+    hideTimePicker();
+});
+
+document.querySelector('.submit-button')?.addEventListener('click', async function(e) {
+    e.preventDefault();
+    if (!currentCompanyId) {
+        alert('Please select a company first.');
+        return;
+    }
+    if (!isCompanyEditMode) {
+        alert('Click Edit before changing company details.');
+        return;
+    }
+
+    const payload = getCompanyUpdatePayload();
+    if (!payload.company_name.trim()) {
+        alert('Company name is required.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/api/company/${currentCompanyId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+        if (!response.ok || result.error) {
+            throw new Error(result.error || 'Unable to update company');
+        }
+
+        alert('Company details updated successfully!');
+        setCompanyEditMode(false);
+        setCompanyActionState();
+        await loadCompanyDetails(currentCompanyId);
+    } catch (err) {
+        alert('Error updating company: ' + err.message);
+    }
+});
 
 function renderMachineTable(machines = [], ticket = null, updateInfoTicket = true) {
     const tbody = document.getElementById('machineTableBody');
@@ -1102,6 +1373,8 @@ async function loadCompanyDetails(companyId) {
         document.getElementById('contactMachineId').value = '';
 
         fillCompanyFields(data.company);
+        setCompanyEditMode(false);
+        setCompanyActionState();
         
         // Clear selections and editable ticket row when loading new company
         selectedMachine = null;
@@ -1140,6 +1413,8 @@ async function loadMachineDetails(machineId, updateInfoTicket = true, updateTick
 
         document.getElementById('machineInput').value = data.machine.mc_no || '';
         fillCompanyFields(data.company || {});
+        setCompanyEditMode(false);
+        setCompanyActionState();
 
         // Fetch full company dataset so we can show all machines and contacts
         let companyMachines = [data.machine];
@@ -2107,142 +2382,14 @@ window.closeTicketDetails = async function() {
     console.log('Ticket details closed - all rows cleared from table 3');
 };
 
-// Format time input to HH:MM (24-hour format)
+// Working hour values are selected through the custom AM/PM picker above.
 function setupTimeInputs() {
-    const workingStart = document.getElementById('workingStart');
-    const workingEnd = document.getElementById('workingEnd');
-    
-    function formatTimeInput(input) {
-        if (!input) return;
-        
-        input.addEventListener('input', function(e) {
-            let value = e.target.value;
-            
-            // Allow typing digits and colon
-            value = value.replace(/[^\d:]/g, ''); // Remove everything except digits and colon
-            
-            // Auto-insert colon after 2 digits if not present
-            if (value.length === 2 && !value.includes(':')) {
-                value = value + ':';
-            }
-            
-            // Limit to HH:MM format (5 characters max)
-            if (value.length > 5) {
-                value = value.substring(0, 5);
-            }
-            
-            // If user types more than 2 digits before colon, move to minutes
-            if (value.length > 2 && !value.includes(':')) {
-                value = value.substring(0, 2) + ':' + value.substring(2);
-            }
-            
-            // Validate and format
-            if (value.includes(':')) {
-                const parts = value.split(':');
-                let hours = parts[0] || '';
-                let minutes = parts[1] || '';
-                
-                // Limit hours to 2 digits
-                if (hours.length > 2) {
-                    hours = hours.substring(0, 2);
-                }
-                
-                // Limit minutes to 2 digits
-                if (minutes.length > 2) {
-                    minutes = minutes.substring(0, 2);
-                }
-                
-                // Validate hours (00-23)
-                if (hours) {
-                    let validHours = parseInt(hours);
-                    if (validHours > 23) {
-                        validHours = 23;
-                        hours = '23';
-                    } else {
-                        hours = String(validHours).padStart(2, '0');
-                    }
-                }
-                
-                // Validate minutes (00-59)
-                if (minutes) {
-                    let validMinutes = parseInt(minutes);
-                    if (validMinutes > 59) {
-                        validMinutes = 59;
-                        minutes = '59';
-                    } else {
-                        minutes = String(validMinutes).padStart(2, '0');
-                    }
-                }
-                
-                // Reconstruct value
-                if (hours && minutes) {
-                    value = hours + ':' + minutes;
-                } else if (hours) {
-                    value = hours + ':';
-                } else {
-                    value = value;
-                }
-            }
-            
-            e.target.value = value;
+    ['workingStart', 'workingEnd'].forEach((id) => {
+        const input = document.getElementById(id);
+        input?.addEventListener('blur', (event) => {
+            event.target.value = toDisplayTime(event.target.value);
         });
-        
-        input.addEventListener('keydown', function(e) {
-            // Allow: backspace, delete, tab, escape, enter, arrow keys, colon
-            if ([8, 9, 27, 13, 46, 37, 38, 39, 40, 186, 59].indexOf(e.keyCode) !== -1 ||
-                // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-                (e.keyCode === 65 && e.ctrlKey === true) ||
-                (e.keyCode === 67 && e.ctrlKey === true) ||
-                (e.keyCode === 86 && e.ctrlKey === true) ||
-                (e.keyCode === 88 && e.ctrlKey === true) ||
-                // Allow: home, end, left, right
-                (e.keyCode >= 35 && e.keyCode <= 39)) {
-                return;
-            }
-            // Allow numbers (0-9) on both number row and numpad
-            if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) {
-                return;
-            }
-            // Block everything else
-            e.preventDefault();
-        });
-        
-        input.addEventListener('blur', function(e) {
-            const value = e.target.value;
-            // Validate and complete partial entries
-            if (value) {
-                if (value.length === 1 && /^\d$/.test(value)) {
-                    e.target.value = '0' + value + ':00';
-                } else if (value.length === 2 && /^\d{2}$/.test(value)) {
-                    e.target.value = value + ':00';
-                } else if (value.includes(':') && value.split(':').length === 2) {
-                    const parts = value.split(':');
-                    let hours = parts[0].padStart(2, '0');
-                    let minutes = parts[1] || '00';
-                    if (minutes.length === 1) {
-                        minutes = minutes + '0';
-                    } else if (minutes.length === 0) {
-                        minutes = '00';
-                    }
-                    minutes = minutes.padStart(2, '0');
-                    
-                    // Validate
-                    let validHours = parseInt(hours);
-                    if (validHours > 23) validHours = 23;
-                    hours = String(validHours).padStart(2, '0');
-                    
-                    let validMinutes = parseInt(minutes);
-                    if (validMinutes > 59) validMinutes = 59;
-                    minutes = String(validMinutes).padStart(2, '0');
-                    
-                    e.target.value = hours + ':' + minutes;
-                }
-            }
-        });
-    }
-    
-    formatTimeInput(workingStart);
-    formatTimeInput(workingEnd);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -2455,6 +2602,8 @@ function limitDropdownScrollSize() {
 // Initialize dropdown scroll limitations on page load
 document.addEventListener('DOMContentLoaded', () => {
     limitDropdownScrollSize();
+    setCompanyEditMode(false);
+    setCompanyActionState();
 });
 
 // Re-apply when new elements are added dynamically

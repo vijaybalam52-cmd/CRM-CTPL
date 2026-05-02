@@ -960,6 +960,27 @@ body {
   cursor: text;
 }
 
+.company-form input,
+.company-form select {
+  color: #1e1e1e;
+  opacity: 1;
+  font-family: 'Carlito', sans-serif;
+  -webkit-text-fill-color: #1e1e1e;
+}
+
+.company-form input::placeholder {
+  color: #6f7a80;
+  opacity: 1;
+  -webkit-text-fill-color: #6f7a80;
+}
+
+.company-form input[readonly],
+.company-form select:disabled {
+  color: #1e1e1e;
+  opacity: 1;
+  -webkit-text-fill-color: #1e1e1e;
+}
+
 .company-autocomplete-dropdown {
   background: white;
   border: 1px solid #bdbdbd;
@@ -1066,7 +1087,7 @@ body {
   height: 18px;
 }
 
-/* City Dropdown */
+/* City Input */
 .city-dropdown {
   position: absolute;
   left: 81px;
@@ -1078,21 +1099,8 @@ body {
   border-style: solid;
   padding: 0 8px;
   font-size: 15px;
-  color: rgba(30, 30, 30, 0.63);
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-}
-
-/* City Dropdown Arrow */
-.city-arrow {
-  position: absolute;
-  left: 221px;
-  top: 218px;
-  width: 8px;
-  height: 8px;
-  pointer-events: none;
+  color: #1e1e1e;
+  cursor: text;
 }
 
 /* Pin Code Label */
@@ -1125,7 +1133,7 @@ body {
   height: 18px;
 }
 
-/* State Dropdown */
+/* State Input */
 .state-dropdown {
   position: absolute;
   left: 81px;
@@ -1137,21 +1145,8 @@ body {
   border-style: solid;
   padding: 0 8px;
   font-size: 15px;
-  color: rgba(30, 30, 30, 0.63);
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-}
-
-/* State Dropdown Arrow */
-.state-arrow {
-  position: absolute;
-  left: 221px;
-  top: 257px;
-  width: 8px;
-  height: 8px;
-  pointer-events: none;
+  color: #1e1e1e;
+  cursor: text;
 }
 
 /* Country Label */
@@ -1162,7 +1157,7 @@ body {
   height: 18px;
 }
 
-/* Country Dropdown */
+/* Country Input */
 .country-input,
 .country-dropdown {
   position: absolute;
@@ -1175,21 +1170,8 @@ body {
   border-style: solid;
   padding: 0 8px;
   font-size: 15px;
-  color: rgba(30, 30, 30, 0.63);
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-}
-
-/* Country Dropdown Arrow */
-.country-arrow {
-  position: absolute;
-  left: 545px;
-  top: 257px;
-  width: 8px;
-  height: 8px;
-  pointer-events: none;
+  color: #1e1e1e;
+  cursor: text;
 }
 
 /* Mc No Search Label */
@@ -1421,23 +1403,10 @@ body {
   z-index: 2;
   width: 100%;
   height: 100%;
-  color: rgba(30, 30, 30, 0.63);
+  color: #1e1e1e;
   text-align: center;
   font-family: 'Carlito', sans-serif;
-}
-
-/* Ensure time input displays in 24-hour format (HH:MM) */
-.work-time-input::-webkit-calendar-picker-indicator {
-  opacity: 1;
   cursor: pointer;
-}
-
-.work-time-input[type="time"] {
-  color: rgba(30, 30, 30, 0.63);
-}
-
-.work-time-input[type="time"]::-webkit-datetime-edit-ampm-field {
-  display: none;
 }
 
 .work-time-arrow {
@@ -1450,6 +1419,54 @@ body {
   z-index: 3;
   width: 8px;
   height: 8px;
+}
+
+.time-picker-panel {
+  position: absolute;
+  display: none;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 109, 184, 0.35);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  z-index: 3000;
+}
+
+.time-picker-panel.show {
+  display: flex;
+}
+
+.time-picker-panel select,
+.time-picker-apply {
+  border: 1px solid rgba(0, 109, 184, 0.3);
+  background: #ffffff;
+  color: #1e1e1e;
+  font-family: 'Carlito', sans-serif;
+  font-size: 14px;
+}
+
+.time-picker-panel select {
+  min-width: 54px;
+  height: 156px;
+  overflow-y: auto;
+}
+
+.time-picker-panel .time-picker-period {
+  height: 56px;
+}
+
+.time-picker-apply {
+  height: 26px;
+  min-width: 42px;
+  background: #006db8;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.time-picker-apply:hover,
+.time-picker-apply:focus {
+  background: #0088dd;
 }
 
 /* Security Reqd Label */
@@ -1475,32 +1492,19 @@ body {
   top: 0;
   bottom: 0;
   left: 0;
-  right: 20px;
-  background: #eaf7fc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-style: solid;
-  border-right: none;
-  padding: 0 8px;
-  font-size: 15px;
-  color: rgba(30, 30, 30, 0.63);
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-  width: calc(100% - 20px);
-}
-
-.security-dropdown-arrow-box {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 87.91%;
   right: 0;
   background: #eaf7fc;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-style: solid;
-  border-left: none;
-  pointer-events: none;
+  padding: 0 8px;
+  font-size: 15px;
+  color: #1e1e1e;
+  cursor: pointer;
+  width: 100%;
+}
+
+.security-dropdown-arrow-box {
+  display: none;
 }
 
 .security-dropdown-arrow {
@@ -1527,6 +1531,10 @@ body {
   height: 34.707px;
 }
 
+.edit-button {
+  left: 241px;
+}
+
 .submit-button {
   left: 361px;
 }
@@ -1542,6 +1550,40 @@ body {
 
 .action-button:hover .button-background {
   background: #0088dd;
+}
+
+.action-button.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.action-button.is-disabled:hover .button-background {
+  background: #006db8;
+}
+
+.company-form.company-editing .edit-button .button-background {
+  background: #0088dd;
+}
+
+.company-search-field {
+  background-color: #ffffff;
+  filter: brightness(1.03);
+}
+
+.company-readonly-field {
+  background-color: #f4f7f9 !important;
+  filter: brightness(0.98);
+}
+
+.company-form.company-editing .company-edit-field {
+  background-color: #fffce8 !important;
+  border-color: rgba(0, 109, 184, 0.55) !important;
+  box-shadow: 0 0 0 2px rgba(0, 136, 221, 0.12);
+  filter: brightness(1.04);
+}
+
+.company-form.company-editing select.company-edit-field {
+  background-color: #fffce8 !important;
 }
 
 .button-text {
