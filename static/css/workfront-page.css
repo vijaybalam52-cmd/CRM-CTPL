@@ -421,6 +421,21 @@
   transition: all 150ms;
 }
 
+.workfront-content .undo-button {
+  position: absolute;
+  left: 685px;
+  top: 10px;
+  width: 100px;
+  height: 44px;
+  cursor: pointer;
+  transition: all 150ms;
+}
+
+.workfront-content .undo-button.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .workfront-content .generate-button {
   position: absolute;
   right: 32px;
@@ -433,13 +448,32 @@
 
 .workfront-content .sort-button-3d,
 .workfront-content .f-button-3d,
-.workfront-content .t-button-3d,
+.workfront-content .t-button-3d {
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #ff3030 0%, #e74444 100%);
+  box-shadow: 0px 2px 0px 0px #e74444, 0px 3px 4px 0px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  transition: all 150ms;
+}
+
 .workfront-content .wpmv-button-3d {
   position: absolute;
   inset: 0;
   border-radius: 5px;
-  background: linear-gradient(180deg, #ff3030 0%, #cc0000 100%);
-  box-shadow: 0px 2px 0px 0px #8b0000, 0px 3px 4px 0px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, #9fdb9f 0%, #89D08D 100%);
+  box-shadow: 0px 2px 0px 0px #5a9a5e, 0px 3px 4px 0px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  transition: all 150ms;
+}
+
+.workfront-content .undo-button-3d {
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #e74444 0%, #e74444 100%);
+  box-shadow: 0px 2px 0px 0px #e74444, 0px 3px 4px 0px rgba(0, 0, 0, 0.3);
   z-index: 1;
   transition: all 150ms;
 }
@@ -448,7 +482,19 @@
 .workfront-content .f-button.active .f-button-3d,
 .workfront-content .t-button.active .t-button-3d {
   background: linear-gradient(180deg, #cc0000 0%, #990000 100%);
-  box-shadow: 0px 1px 0px 0px #660000, 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 1px 0px 0px #e74444, 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
+  transform: translateY(1px);
+}
+
+.workfront-content .wpmv-button:active .wpmv-button-3d {
+  background: linear-gradient(180deg, #74b878 0%, #6aad6e 100%);
+  box-shadow: 0px 1px 0px 0px #4a8a4e, 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
+  transform: translateY(1px);
+}
+
+.workfront-content .undo-button:active:not(.disabled) .undo-button-3d {
+  background: linear-gradient(180deg, #e74444 0%, #e74444 100%);
+  box-shadow: 0px 1px 0px 0px #e74444, 0px 2px 3px 0px rgba(0, 0, 0, 0.4);
   transform: translateY(1px);
 }
 
@@ -463,7 +509,8 @@
 .workfront-content .sort-button span,
 .workfront-content .f-button span,
 .workfront-content .t-button span,
-.workfront-content .wpmv-button span {
+.workfront-content .wpmv-button span,
+.workfront-content .undo-button span {
   position: absolute;
   font-weight: bold;
   font-size: 16px;

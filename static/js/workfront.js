@@ -16,9 +16,11 @@ let originalSprValues = [];
 let originalPrValues = [];
 let originalDoneValues = [];
 let originalStatusValues = [];
+let selectedWorkFrontIds = new Set();
 
 // LocalStorage key for PR values (temporary, not stored in database)
 const STORAGE_KEY_PR_VALUES = 'workfront_pr_values';
+const STORAGE_KEY_LAST_DONE_IDS = 'workfront_last_done_ids';
 
 // Helper function to get total rows (based on actual data length)
 function getTotalRows() {
@@ -51,6 +53,7 @@ async function fetchWorkfrontData() {
         }
         const data = await response.json();
         console.log('Workfront data received:', data.length, 'records');
+        const previousSelectedWorkFrontIds = new Set(selectedWorkFrontIds);
         
         // Set total rows based on actual data length (dynamic)
         totalRows = data.length;
@@ -97,6 +100,11 @@ async function fetchWorkfrontData() {
         
         // Load PR values from localStorage (temporary storage, not database)
         loadPrValuesFromStorage();
+        selectedWorkFrontIds = new Set(
+            rowIds
+                .filter(id => previousSelectedWorkFrontIds.has(String(id)))
+                .map(id => String(id))
+        );
         renumberTableRows();
         
         saveOriginalOrder();
@@ -112,6 +120,7 @@ async function fetchWorkfrontData() {
         prValues = [];
         doneValues = [];
         statusValues = [];
+        selectedWorkFrontIds.clear();
         saveOriginalOrder();
         return false;
     }
@@ -506,6 +515,37 @@ function loadPrValuesFromStorage() {
     }
 }
 
+function getLastDoneIds() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY_LAST_DONE_IDS);
+        const ids = stored ? JSON.parse(stored) : [];
+        return Array.isArray(ids) ? ids.map(id => String(id)).filter(Boolean) : [];
+    } catch (e) {
+        console.error('Error loading last done rows from storage:', e);
+        return [];
+    }
+}
+
+function setLastDoneIds(ids) {
+    const normalizedIds = Array.isArray(ids) ? ids.map(id => String(id)).filter(Boolean) : [];
+    if (normalizedIds.length > 0) {
+        localStorage.setItem(STORAGE_KEY_LAST_DONE_IDS, JSON.stringify(normalizedIds));
+    } else {
+        localStorage.removeItem(STORAGE_KEY_LAST_DONE_IDS);
+    }
+    updateUndoButtonState();
+}
+
+function updateUndoButtonState() {
+    const undoButton = document.querySelector('.workfront-content .undo-button');
+    if (!undoButton) return;
+
+    const hasUndoRows = getLastDoneIds().length > 0;
+    undoButton.classList.toggle('disabled', !hasUndoRows);
+    undoButton.setAttribute('aria-disabled', hasUndoRows ? 'false' : 'true');
+    undoButton.title = hasUndoRows ? 'Restore the last Done rows' : 'No recent Done rows to restore';
+}
+
 async function updateSprPr(rowIndex, spr, pr) {
     const id = rowIds[rowIndex];
     if (!id) return;
@@ -542,6 +582,17 @@ function syncSprPrHeights() {
     }
 }
 
+function updateSelectAllDoneCheckbox() {
+    const selectAllCheckbox = document.getElementById('selectAllDoneRows');
+    if (!selectAllCheckbox) return;
+
+    const selectableIds = rowIds.filter((id, index) => id && tableData[index]);
+    const selectedCount = selectableIds.filter(id => selectedWorkFrontIds.has(String(id))).length;
+
+    selectAllCheckbox.checked = selectableIds.length > 0 && selectedCount === selectableIds.length;
+    selectAllCheckbox.indeterminate = selectedCount > 0 && selectedCount < selectableIds.length;
+}
+
 function renderMainTable() {
     renumberTableRows();
     mainTableBody.innerHTML = '';
@@ -576,7 +627,7 @@ function renderMainTable() {
             <div class="td" style="width: 50px;">${row ? row.rg : ''}</div>
             <div class="td" style="width: 65px;">${row ? row.logby : ''}</div>
             <div class="td" style="width: 50px; border-right: none;">
-                ${row ? `<input type="checkbox" class="done-checkbox" data-row-index="${i}" ${doneValues[i] ? 'checked' : ''}>` : ''}
+                ${row ? `<input type="checkbox" class="done-checkbox" data-row-index="${i}" ${selectedWorkFrontIds.has(String(rowIds[i])) ? 'checked' : ''}>` : ''}
             </div>
         `;
         mainTableBody.appendChild(tr);
@@ -585,23 +636,16 @@ function renderMainTable() {
         if (row) {
             const checkbox = tr.querySelector('.done-checkbox');
             if (checkbox) {
-                checkbox.addEventListener('change', async (e) => {
-                    const isChecked = e.target.checked;
-                    if (isChecked) {
-                        // Show confirmation popup
-                        if (confirm('Are you sure you want to mark this as done and transfer to Work Done?')) {
-                            // Transfer to work done
-                            await transferSingleRowToWorkDone(i);
-                        } else {
-                            // User cancelled, uncheck the checkbox
-                            e.target.checked = false;
-                            doneValues[i] = false;
-                        }
+                checkbox.addEventListener('change', (e) => {
+                    const workFrontId = rowIds[i];
+                    if (!workFrontId) return;
+
+                    if (e.target.checked) {
+                        selectedWorkFrontIds.add(String(workFrontId));
                     } else {
-                        // If unchecking, just update the status
-                        doneValues[i] = false;
-                        updateDone(i, false);
+                        selectedWorkFrontIds.delete(String(workFrontId));
                     }
+                    updateSelectAllDoneCheckbox();
                 });
             }
         }
@@ -609,6 +653,7 @@ function renderMainTable() {
     
     // Render total row in separate fixed container (like trip sheet)
     renderTotalRow();
+    updateSelectAllDoneCheckbox();
 }
 
 function renderTotalRow() {
@@ -859,20 +904,37 @@ function setupSortButton() {
     
     const tButton = document.querySelector('.workfront-content .t-button');
     if (tButton) tButton.addEventListener('click', toggleSortByT);
+
+    const selectAllCheckbox = document.getElementById('selectAllDoneRows');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function(e) {
+            const shouldSelect = e.target.checked;
+
+            for (let i = 0; i < rowIds.length; i++) {
+                const workFrontId = rowIds[i];
+                if (!workFrontId || !tableData[i]) continue;
+
+                if (shouldSelect) {
+                    selectedWorkFrontIds.add(String(workFrontId));
+                } else {
+                    selectedWorkFrontIds.delete(String(workFrontId));
+                }
+            }
+
+            document.querySelectorAll('.done-checkbox[data-row-index]').forEach((checkbox) => {
+                checkbox.checked = shouldSelect;
+            });
+            updateSelectAllDoneCheckbox();
+        });
+    }
     
     const wpmvButton = document.querySelector('.workfront-content .wpmv-button');
     if (wpmvButton) {
         wpmvButton.addEventListener('click', async function() {
-            // Get all rows with done checkbox checked
-            const doneRowIds = [];
-            for (let i = 0; i < doneValues.length; i++) {
-                if (doneValues[i]) {
-                    doneRowIds.push(rowIds[i]);
-                }
-            }
+            const doneRowIds = Array.from(selectedWorkFrontIds);
             
             if (doneRowIds.length === 0) {
-                alert('No rows with "Done" checkbox checked. Please select at least one row to transfer.');
+                alert('Please select at least one row to move to Work Done.');
                 return;
             }
             
@@ -885,9 +947,10 @@ function setupSortButton() {
                     });
                     const data = await response.json();
                     if (response.ok) {
-                        alert(`Successfully transferred ${data.count || doneRowIds.length} row(s) to Work Done! Redirecting to Work Done page...`);
-                        // Automatically redirect to work done page
-                        window.location.href = '/workdone';
+                        setLastDoneIds(data.work_front_ids || doneRowIds);
+                        selectedWorkFrontIds.clear();
+                        alert(`Successfully moved ${data.count || doneRowIds.length} row(s) to Work Done.`);
+                        await refreshData();
                     } else {
                         alert('Error transferring to work done: ' + (data.error || 'Unknown error'));
                     }
@@ -898,6 +961,40 @@ function setupSortButton() {
             }
         });
     }
+
+    const undoButton = document.querySelector('.workfront-content .undo-button');
+    if (undoButton) {
+        undoButton.addEventListener('click', async function() {
+            const undoRowIds = getLastDoneIds();
+            if (undoRowIds.length === 0) {
+                alert('No recent Done rows to restore.');
+                return;
+            }
+
+            if (confirm(`Restore ${undoRowIds.length} recently moved row(s) back to Workfront?`)) {
+                try {
+                    const response = await fetch('/api/workfront/undo-transfer-to-workdone', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ work_front_ids: undoRowIds })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        setLastDoneIds([]);
+                        selectedWorkFrontIds.clear();
+                        alert(`Restored ${data.count || undoRowIds.length} row(s) back to Workfront.`);
+                        await refreshData();
+                    } else {
+                        alert('Error restoring rows: ' + (data.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error restoring rows:', error);
+                    alert('Error restoring rows: ' + error.message);
+                }
+            }
+        });
+    }
+    updateUndoButtonState();
     
     const generateButton = document.querySelector('.workfront-content .generate-button');
     if (generateButton) {

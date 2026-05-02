@@ -26,7 +26,11 @@
     </div>
     <div class="wpmv-button">
         <div class="wpmv-button-3d"></div>
-        <span>W/PMV</span>
+        <span>Done</span>
+    </div>
+    <div class="undo-button">
+        <div class="undo-button-3d"></div>
+        <span>Undo</span>
     </div>
     <div class="generate-button">
         <div class="generate-button-3d"></div>
@@ -60,7 +64,9 @@
                 <div class="th" style="width: 100px;">Contact</div>
                 <div class="th" style="width: 50px;">Rg</div> 
                 <div class="th" style="width: 65px;">Logby</div>
-                <div class="th" style="width: 50px; border-right: none;">Done</div>
+                <div class="th" style="width: 50px; border-right: none;">
+                    <input type="checkbox" id="selectAllDoneRows" class="done-checkbox done-select-all" title="Select all rows">
+                </div>
             </div>
             <div class="table-body" id="mainTableBody"></div>
             <div class="table-total-row" id="tableTotalRow"></div>

@@ -1548,8 +1548,24 @@ body {
   transition: background 0.3s;
 }
 
+.edit-button .button-background {
+  background: #FF6745;
+}
+
+.submit-button .button-background {
+  background: #89D08D;
+}
+
 .action-button:hover .button-background {
   background: #0088dd;
+}
+
+.edit-button:hover .button-background {
+  background: #e8573a;
+}
+
+.submit-button:hover .button-background {
+  background: #74b878;
 }
 
 .action-button.is-disabled {
@@ -1561,8 +1577,16 @@ body {
   background: #006db8;
 }
 
+.edit-button.is-disabled:hover .button-background {
+  background: #FF6745;
+}
+
+.submit-button.is-disabled:hover .button-background {
+  background: #89D08D;
+}
+
 .company-form.company-editing .edit-button .button-background {
-  background: #0088dd;
+  background: #e8573a;
 }
 
 .company-search-field {

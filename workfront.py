@@ -748,7 +748,8 @@ def transfer_to_workdone():
         return jsonify({
             "success": True,
             "message": f"Successfully transferred {inserted_count} row(s) to work done",
-            "count": inserted_count
+            "count": inserted_count,
+            "work_front_ids": [row.get('id') for row in work_front_rows if row.get('id')]
         })
 
     except Error as exc:
@@ -759,6 +760,117 @@ def transfer_to_workdone():
         if cnx:
             cnx.rollback()
         print(f"Unexpected error in transfer_to_workdone: {str(exc)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(exc)}), 500
+    finally:
+        try:
+            if cur:
+                cur.close()
+            if cnx:
+                cnx.close()
+        except Exception:
+            pass
+
+
+@workfront_bp.route("/api/workfront/undo-transfer-to-workdone", methods=["POST"])
+def undo_transfer_to_workdone():
+    """Restore recently moved work_front rows from work_done back to Workfront."""
+    cnx = cur = None
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        raw_work_front_ids = data.get("work_front_ids", [])
+        work_front_ids = []
+        for raw_id in raw_work_front_ids:
+            try:
+                work_front_id = int(raw_id)
+            except (TypeError, ValueError):
+                continue
+            if work_front_id > 0 and work_front_id not in work_front_ids:
+                work_front_ids.append(work_front_id)
+
+        if not work_front_ids:
+            return jsonify({"error": "No valid work_front_ids provided"}), 400
+
+        cnx = get_connection(DB_CONFIG)
+        cur = cnx.cursor(dictionary=True)
+
+        placeholders = ','.join(['%s'] * len(work_front_ids))
+        cur.execute(
+            f"""
+            SELECT wf.id, wf.issue_id, ti.ticket_id, t.machine_id, t.ticket_no
+            FROM work_front wf
+            LEFT JOIN ticket_issues ti ON wf.issue_id = ti.id
+            LEFT JOIN tickets t ON ti.ticket_id = t.id
+            WHERE wf.id IN ({placeholders})
+            """,
+            tuple(work_front_ids)
+        )
+        work_front_rows = cur.fetchall()
+
+        if not work_front_rows:
+            return jsonify({"error": "No rows found to restore"}), 400
+
+        found_work_front_ids = [row.get('id') for row in work_front_rows if row.get('id')]
+        found_placeholders = ','.join(['%s'] * len(found_work_front_ids))
+
+        cur.execute(
+            f"DELETE FROM work_done WHERE work_front_id IN ({found_placeholders})",
+            tuple(found_work_front_ids)
+        )
+        cur.execute(
+            f"UPDATE work_front SET status = 'open' WHERE id IN ({found_placeholders})",
+            tuple(found_work_front_ids)
+        )
+
+        issue_ids = list({row.get('issue_id') for row in work_front_rows if row.get('issue_id')})
+        if issue_ids:
+            issue_placeholders = ','.join(['%s'] * len(issue_ids))
+            cur.execute(
+                f"UPDATE ticket_issues SET status = 'open' WHERE id IN ({issue_placeholders})",
+                tuple(issue_ids)
+            )
+
+        ticket_ids = list({row.get('ticket_id') for row in work_front_rows if row.get('ticket_id')})
+        if ticket_ids:
+            ticket_placeholders = ','.join(['%s'] * len(ticket_ids))
+            cur.execute(
+                f"UPDATE tickets SET status = 'open' WHERE id IN ({ticket_placeholders})",
+                tuple(ticket_ids)
+            )
+            try:
+                cur.execute(
+                    f"""
+                    UPDATE machines m
+                    INNER JOIN tickets t ON t.machine_id = m.id
+                    SET m.ticket_no = t.ticket_no
+                    WHERE t.id IN ({ticket_placeholders})
+                    """,
+                    tuple(ticket_ids)
+                )
+            except Exception as machine_error:
+                print(f"WARNING: Failed to restore machine ticket_no: {str(machine_error)}")
+
+        cnx.commit()
+
+        return jsonify({
+            "success": True,
+            "message": f"Restored {len(found_work_front_ids)} row(s) to workfront",
+            "count": len(found_work_front_ids),
+            "work_front_ids": found_work_front_ids
+        })
+
+    except Error as exc:
+        if cnx:
+            cnx.rollback()
+        return jsonify({"error": str(exc)}), 500
+    except Exception as exc:
+        if cnx:
+            cnx.rollback()
+        print(f"Unexpected error in undo_transfer_to_workdone: {str(exc)}")
         import traceback
         traceback.print_exc()
         return jsonify({"error": str(exc)}), 500
