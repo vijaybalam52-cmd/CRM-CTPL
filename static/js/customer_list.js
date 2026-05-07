@@ -1,6 +1,7 @@
 const customerListColumns = [
     { key: 'sl', width: 70, align: 'center' },
     { key: 'customer_name', width: 280, align: 'left' },
+    { key: 'old_name', width: 220, align: 'left' },
     { key: 'mc_no', width: 110, align: 'center' },
     { key: 'status', width: 130, align: 'center' },
     { key: 'gstin', width: 160, align: 'left' },
@@ -179,6 +180,7 @@ async function exportCustomerListToExcel() {
         const headers = [
             'SI.',
             'Customer Name',
+            'Old Name',
             'MC No',
             'Status',
             'GSTIN',
@@ -227,6 +229,7 @@ async function exportCustomerListToExcel() {
             const excelRow = worksheet.addRow([
                 String(index + 1),
                 row.customer_name || '',
+                row.old_name || '',
                 row.mc_no || '',
                 row.status || '',
                 row.gstin || '',
@@ -270,7 +273,7 @@ async function exportCustomerListToExcel() {
         });
 
         worksheet.columns = customerListColumns.map((column, index) => ({
-            width: index === 1 ? 30 : index >= 13 && index <= 15 ? 24 : Math.max(12, Math.round(column.width / 9))
+            width: index === 1 ? 30 : index === 2 ? 26 : index >= 14 && index <= 16 ? 24 : Math.max(12, Math.round(column.width / 9))
         }));
 
         const buffer = await workbook.xlsx.writeBuffer();
@@ -304,6 +307,7 @@ async function exportCustomerListCompactToExcel() {
         const exportColumns = [
             { header: 'S.No', key: 'sl', width: 10 },
             { header: 'Customer Name', key: 'customer_name', width: 30 },
+            { header: 'Old Name', key: 'old_name', width: 26 },
             { header: 'M/C', key: 'mc_no', width: 18 },
             { header: 'Model', key: 'model', width: 22 },
             { header: 'Address 1', key: 'address1', width: 24 },
@@ -340,6 +344,7 @@ async function exportCustomerListCompactToExcel() {
             const excelRow = worksheet.addRow({
                 sl: String(index + 1),
                 customer_name: row.customer_name || '',
+                old_name: row.old_name || '',
                 mc_no: row.mc_no || '',
                 model: row.model || '',
                 address1: row.address1 || '',

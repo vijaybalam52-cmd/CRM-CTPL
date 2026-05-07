@@ -23,8 +23,9 @@ def get_workdone():
         # Use normalized schema: join work_done -> work_front -> ticket_issues -> tickets -> machines -> companies -> short_form -> cluster -> contacts
         query = """
                  SELECT wd.id AS id,
-                     ti.date AS date,
-                     wd.done_by AS done_by,
+                    ti.date AS date,
+                    wd.done_date AS done_date,
+                    wd.done_by AS done_by,
                    m.mc_no AS mc_no,
                    comp.name AS company,
                    sf.prior AS priority,
@@ -80,6 +81,8 @@ def get_workdone():
         for row in rows:
             d = row.get('date')
             date_str = d.strftime('%d-%b-%y') if d and hasattr(d, 'strftime') else (str(d) if d else '')
+            done_d = row.get('done_date')
+            done_date_str = done_d.strftime('%d-%b-%y') if done_d and hasattr(done_d, 'strftime') else (str(done_d) if done_d else '')
 
             # Get spares for this work_done record (up to 5)
             work_done_id = row.get('id')
@@ -108,7 +111,7 @@ def get_workdone():
                 'person': str(row.get('person')) if row.get('person') else '',
                 'contact': str(row.get('contact_no')) if row.get('contact_no') else '',
                 'rg': str(row.get('rg')) if row.get('rg') else '',
-                'done_date': date_str,
+                'done_date': done_date_str,
                 'done_by': str(row.get('done_by')) if row.get('done_by') else '',
                 'spares': spares_array  # Array of up to 5 spares
             })

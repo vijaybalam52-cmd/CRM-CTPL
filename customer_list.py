@@ -10,6 +10,21 @@ from database import get_connection
 customer_list_bp = Blueprint("customer_list", __name__)
 
 
+def _ensure_backup_table(cur):
+    """Create the company name backup table when it is not present."""
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS backup(
+            id INT PRIMARY KEY,
+            company_id INT,
+            old_name VARCHAR(100),
+            FOREIGN KEY (company_id)
+            REFERENCES companies(id) ON DELETE CASCADE
+        )
+        """
+    )
+
+
 def _format_date(value):
     """Format date/datetime values for the frontend table."""
     if not value:
@@ -53,12 +68,14 @@ def get_customer_list():
     try:
         cnx = get_connection(DB_CONFIG)
         cur = cnx.cursor(dictionary=True)
+        _ensure_backup_table(cur)
         query = """
             SELECT
                 c.id AS company_id,
                 m.id AS machine_id,
                 cont.id AS contact_id,
                 c.name AS customer_name,
+                b.old_name AS old_name,
                 m.mc_no AS mc_no,
                 m.model AS model,
                 COALESCE(st.status_option, CAST(m.status AS CHAR), '') AS machine_status,
@@ -95,6 +112,17 @@ def get_customer_list():
                                 AND (m.id IS NULL OR cont.machine_id = m.id)
             LEFT JOIN status_options st ON st.id = m.status
             LEFT JOIN security_options sec ON sec.id = c.security                                                                                                                                                                        
+            LEFT JOIN (
+                SELECT b1.company_id, b1.old_name
+                FROM backup b1
+                INNER JOIN (
+                    SELECT company_id, MAX(id) AS latest_id
+                    FROM backup
+                    GROUP BY company_id
+                ) latest_backup
+                    ON latest_backup.company_id = b1.company_id
+                   AND latest_backup.latest_id = b1.id
+            ) b ON b.company_id = c.id
             LEFT JOIN cluster cl
                    ON c.zone REGEXP '^[0-9]+$'
                   AND c.area REGEXP '^[0-9]+$'
@@ -125,6 +153,7 @@ def get_customer_list():
                 "id": f"{row.get('company_id') or 'c0'}-{row.get('machine_id') or 'm0'}-{row.get('contact_id') or 'p0'}",
                 "sl": str(idx),
                 "customer_name": str(row.get("customer_name") or ""),
+                "old_name": str(row.get("old_name") or ""),
                 "mc_no": str(row.get("mc_no") or ""),
                 "model": str(row.get("model") or ""),
                 "status": str(row.get("machine_status") or ""),

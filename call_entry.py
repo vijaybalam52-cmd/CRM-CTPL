@@ -56,6 +56,21 @@ def _fetch_option_rows():
     return security_options, status_options
 
 
+def _ensure_backup_table(cur):
+    """Create the company name backup table when it is not present."""
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS backup(
+            id INT PRIMARY KEY,
+            company_id INT,
+            old_name VARCHAR(100),
+            FOREIGN KEY (company_id)
+            REFERENCES companies(id) ON DELETE CASCADE
+        )
+        """
+    )
+
+
 @call_entry_bp.route("/")
 @call_entry_bp.route("/call-entry")
 def index():
@@ -206,6 +221,7 @@ def update_company(company_id):
     try:
         cnx = get_connection(DB_CONFIG)
         cur = cnx.cursor(dictionary=True)
+        _ensure_backup_table(cur)
 
         security_id = to_int_or_none(data.get("company_security_id"))
         security_text = clean_text("company_security")
@@ -216,6 +232,27 @@ def update_company(company_id):
             )
             security_row = cur.fetchone()
             security_id = security_row.get("id") if security_row else None
+
+        new_company_name = clean_text("company_name")
+        cur.execute("SELECT name FROM companies WHERE id = %s", (company_id,))
+        existing_company = cur.fetchone()
+        if not existing_company:
+            cnx.rollback()
+            return jsonify({"error": "Company not found"}), 404
+
+        old_company_name = existing_company.get("name")
+        if old_company_name is not None:
+            old_company_name = str(old_company_name).strip() or None
+
+        if old_company_name and new_company_name and old_company_name != new_company_name:
+            cur.execute(
+                """
+                INSERT INTO backup (id, company_id, old_name)
+                SELECT COALESCE(MAX(id), 0) + 1, %s, %s
+                FROM backup
+                """,
+                (company_id, old_company_name[:100]),
+            )
 
         update_sql = """
             UPDATE companies
@@ -240,7 +277,7 @@ def update_company(company_id):
             WHERE id = %s
         """
         values = (
-            clean_text("company_name"),
+            new_company_name,
             clean_text("company_street"),
             clean_text("company_area"),
             clean_text("company_address3"),
