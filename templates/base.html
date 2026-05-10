@@ -94,22 +94,22 @@
                 </div>
             </a>
 
-            <a href="{{ url_for('call_entry.index') }}" class="sidebar-item sidebar-link {% block nav_wf_tele_active %}{% endblock %}" style="top: 180px;">
+            <a href="{{ url_for('call_entry.index') }}" class="sidebar-item sidebar-link {% block nav_call_entry_active %}{% endblock %}" style="top: 180px;">
                 <div class="sidebar-btn"></div>
                 <img src="{{ url_for('static', filename='images/icon-flag.png') }}" alt="" class="sidebar-icon" />
                 <div class="sidebar-overlay">
                     <img src="{{ url_for('static', filename='images/icon-phone.png') }}" alt="" />
                 </div>
-                <div class="sidebar-label">WF Tele</div>
+                <div class="sidebar-label">Call Entry</div>
             </a>
 
-            <a href="{{ url_for('workfront.workfront') }}" class="sidebar-item sidebar-link {% block nav_wf_field_active %}{% endblock %}" style="top: 260px;">
+            <a href="{{ url_for('workfront.workfront') }}" class="sidebar-item sidebar-link {% block nav_workfront_active %}{% endblock %}" style="top: 260px;">
                 <div class="sidebar-btn"></div>
                 <img src="{{ url_for('static', filename='images/icon-direction.png') }}" alt="" class="sidebar-icon" />
                 <div class="sidebar-overlay">
                     <img src="{{ url_for('static', filename='images/icon-map.png') }}" alt="" />
                 </div>
-                <div class="sidebar-label">WF Field</div>
+                <div class="sidebar-label">Workfront</div>
             </a>
 
             <a href="{{ url_for('tripsheet.tripsheet') }}" class="sidebar-item sidebar-link {% block nav_tripsheet_active %}{% endblock %}" style="top: 340px;">
