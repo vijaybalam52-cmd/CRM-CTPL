@@ -16,27 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `spares_option`
+-- Table structure for table `job_time`
 --
 
-DROP TABLE IF EXISTS `spares_option`;
+DROP TABLE IF EXISTS `job_time`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `spares_option` (
+CREATE TABLE `job_time` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `spares` varchar(255) DEFAULT NULL,
+  `purpose` varchar(255) DEFAULT NULL,
+  `est_time_job` time DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `spares_option`
+-- Dumping data for table `job_time`
 --
 
-LOCK TABLES `spares_option` WRITE;
-/*!40000 ALTER TABLE `spares_option` DISABLE KEYS */;
-INSERT INTO `spares_option` VALUES (1,'11xLight'),(2,'Addon card'),(3,'Auxiliary Light'),(4,'Axis card New code'),(5,'Axis card Old Code'),(6,'Axis motor'),(7,'10MP Camera'),(8,'10MP Camera Cable'),(9,'Central Card 64 Bit'),(10,'Central card Old Code'),(11,'Co-axial Light'),(12,'Cooling Fan'),(13,'Encoder Readerhead'),(14,'GP Sheet 2015'),(15,'GP Sheet 4020'),(16,'GP Sheet 4030'),(17,'H-Nut 2mm'),(18,'H-Nut 2mm Asmbly'),(19,'H-Nut 5mm'),(20,'H-Nut 5mm Asmbly'),(21,'Joystick Box'),(22,'Joystick Cable'),(23,'Lighting Card'),(24,'Lighting Card (HT)'),(25,'Motherboard'),(26,'Motor Cupler'),(27,'D33 Controller'),(28,'Power Adaptor'),(29,'Probe PCB'),(30,'Profile Light'),(31,'Retractor Spring'),(32,'Surface Light'),(33,'Surface Light(Probe Sslot)'),(34,'Surface Light (HT)'),(35,'Usb Module'),(36,'Zoom In/Out Motor'),(37,'Zoom In/Out Motor Assembly'),(38,'Limitswitch'),(39,'NOTA');
-/*!40000 ALTER TABLE `spares_option` ENABLE KEYS */;
+LOCK TABLES `job_time` WRITE;
+/*!40000 ALTER TABLE `job_time` DISABLE KEYS */;
+INSERT INTO `job_time` VALUES (1,'Service','01:30:00'),(2,'Calib','01:30:00'),(3,'Train/Upg','02:00:00'),(4,'PMV','00:30:00'),(5,'Demo','01:00:00'),(6,'Extend','00:30:00'),(7,'Lunch','00:30:00'),(8,'BF','00:30:00');
+/*!40000 ALTER TABLE `job_time` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:33
+-- Dump completed on 2026-05-10 17:28:04

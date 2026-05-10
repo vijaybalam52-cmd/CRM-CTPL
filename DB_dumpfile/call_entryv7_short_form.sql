@@ -16,35 +16,36 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `accounts`
+-- Table structure for table `short_form`
 --
 
-DROP TABLE IF EXISTS `accounts`;
+DROP TABLE IF EXISTS `short_form`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `accounts` (
+CREATE TABLE `short_form` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `tag_name` varchar(10) NOT NULL,
-  `role_id` int DEFAULT NULL,
-  `email_id` varchar(255) NOT NULL,
-  `phone_no` varchar(255) NOT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `role_id` (`role_id`),
-  CONSTRAINT `accounts_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `s` int DEFAULT NULL,
+  `a` int DEFAULT NULL,
+  `i` int DEFAULT NULL,
+  `d` int DEFAULT NULL,
+  `e` int DEFAULT NULL,
+  `f` int DEFAULT NULL,
+  `p` int DEFAULT NULL,
+  `prior` int DEFAULT NULL,
+  `purpose` varchar(100) DEFAULT NULL,
+  `priority` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `accounts`
+-- Dumping data for table `short_form`
 --
 
-LOCK TABLES `accounts` WRITE;
-/*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES (1,'Vijay Bala','VB',1,'vijay@gmail.com','9087743988','Electronic city','scrypt:32768:8:1$wZYlRj0j3XffTbBS$677868c301a6523454e916930410e0461e4731f2cff9148010664c814759fb6237de3923ca3d910f7036a7758caefd49f552849bc9cfed3c7b35d126dfc3c609'),(2,'Vijay ','VJ',1,'vijay1@gmail.com','9987743988','Electronic city','1234567890');
-/*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
+LOCK TABLES `short_form` WRITE;
+/*!40000 ALTER TABLE `short_form` DISABLE KEYS */;
+INSERT INTO `short_form` VALUES (1,1,0,0,0,0,1,0,1,'Service','F 1 Service'),(2,0,1,0,0,0,1,0,2,'Calib','F 2 Calib'),(3,0,0,1,0,0,1,0,3,'Train/Upg','F 3 Train/Upg'),(4,0,0,0,1,0,1,0,4,'PMV','F 4 PMV'),(5,0,0,0,0,1,1,0,5,'Demo','F 5 Demo'),(6,0,0,0,0,0,1,1,6,'Extend','F 6 Extend'),(7,0,0,0,0,0,0,0,1,'Tele','T 1 Tele'),(8,0,0,0,0,0,0,0,2,'Online','T 2 Online'),(9,0,0,0,0,0,0,0,3,'Disc','T 3 Disc'),(10,0,0,0,0,0,0,0,4,'Courier','T 4 Courier');
+/*!40000 ALTER TABLE `short_form` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -56,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:32
+-- Dump completed on 2026-05-10 17:28:04

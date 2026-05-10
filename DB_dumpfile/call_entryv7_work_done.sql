@@ -31,7 +31,7 @@ CREATE TABLE `work_done` (
   PRIMARY KEY (`id`),
   KEY `work_front_id` (`work_front_id`),
   CONSTRAINT `work_done_ibfk_1` FOREIGN KEY (`work_front_id`) REFERENCES `work_front` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `work_done` (
 
 LOCK TABLES `work_done` WRITE;
 /*!40000 ALTER TABLE `work_done` DISABLE KEYS */;
-INSERT INTO `work_done` VALUES (1,4,'2026-03-31','SP','closed'),(2,11,'2026-04-01','VB','closed'),(3,16,'2026-04-02','DM','closed'),(4,1,'2026-04-02','VB','closed'),(5,18,'2026-04-29','ST ','closed'),(6,3,'2026-04-29','','closed'),(7,5,'2026-04-29','','closed'),(8,20,'2026-04-29','','closed'),(9,19,'2026-04-29','','closed'),(10,9,'2026-04-29','SD','closed'),(11,21,'2026-04-29','AK','closed');
+INSERT INTO `work_done` VALUES (1,4,'2026-03-31','SP','closed'),(2,11,'2026-04-01','VB','closed'),(3,16,'2026-04-02','DM','closed'),(4,1,'2026-04-02','VB','closed'),(5,18,'2026-04-29','ST ','closed'),(6,3,'2026-04-29','VB','closed'),(7,5,'2026-04-29','ST','closed'),(8,20,'2026-04-29','SM','closed'),(9,19,'2026-04-29','VB','closed'),(10,9,'2026-04-29','SD','closed'),(11,21,'2026-04-29','AK','closed'),(12,10,'2026-05-01','KY','closed'),(13,7,'2026-05-01','VB','closed'),(14,13,'2026-05-01','FB','closed'),(15,17,'2026-05-01','EY','closed'),(16,15,'2026-05-01','VB','closed'),(17,22,'2026-05-02','VB','closed'),(18,23,'2026-05-02','SD','closed'),(29,25,'2026-05-06','VB','closed'),(30,12,'2026-05-08','SD','closed'),(31,6,'2026-05-08','','closed');
 /*!40000 ALTER TABLE `work_done` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:32
+-- Dump completed on 2026-05-10 17:28:04

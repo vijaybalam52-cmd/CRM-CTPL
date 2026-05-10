@@ -16,27 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `spare_option`
+-- Table structure for table `hotels`
 --
 
-DROP TABLE IF EXISTS `spare_option`;
+DROP TABLE IF EXISTS `hotels`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `spare_option` (
+CREATE TABLE `hotels` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `spare_name` varchar(255) NOT NULL,
+  `zarc` int DEFAULT NULL,
+  `hotel_name` varchar(255) DEFAULT NULL,
+  `location_url` varchar(2083) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `spare_option`
+-- Dumping data for table `hotels`
 --
 
-LOCK TABLES `spare_option` WRITE;
-/*!40000 ALTER TABLE `spare_option` DISABLE KEYS */;
-INSERT INTO `spare_option` VALUES (1,'11xLight'),(2,'Addon card'),(3,'Auxiliary Light'),(4,'Axis card New code'),(5,'Axis card Old Code'),(6,'Axis motor'),(7,'10MP Camera'),(8,'10MP Camera Cable'),(9,'Central Card 64 Bit'),(10,'Central card Old Code'),(11,'Co-axial Light'),(12,'Cooling Fan'),(13,'Encoder Readerhead'),(14,'GP Sheet 2015'),(15,'GP Sheet 4020'),(16,'GP Sheet 4030'),(17,'H-Nut 2mm'),(18,'H-Nut 2mm Asmbly'),(19,'H-Nut 5mm'),(20,'H-Nut 5mm Asmbly'),(21,'Joystick Box'),(22,'Joystick Cable'),(23,'Lighting Card'),(24,'Lighting Card (HT)'),(25,'Motherboard'),(26,'Motor Cupler'),(27,'D33 Controller'),(28,'Power Adaptor'),(29,'Probe PCB'),(30,'Profile Light'),(31,'Retractor Spring'),(32,'Surface Light'),(33,'Surface Light(Probe Sslot)'),(34,'Surface Light (HT)'),(35,'Usb Module'),(36,'Zoom In/Out Motor'),(37,'Zoom In/Out Motor Assembly'),(38,'Limitswitch'),(39,'NOTA');
-/*!40000 ALTER TABLE `spare_option` ENABLE KEYS */;
+LOCK TABLES `hotels` WRITE;
+/*!40000 ALTER TABLE `hotels` DISABLE KEYS */;
+/*!40000 ALTER TABLE `hotels` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:32
+-- Dump completed on 2026-05-10 17:28:04

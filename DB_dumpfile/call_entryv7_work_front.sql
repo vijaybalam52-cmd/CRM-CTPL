@@ -38,7 +38,7 @@ CREATE TABLE `work_front` (
   CONSTRAINT `work_front_ibfk_1` FOREIGN KEY (`issue_id`) REFERENCES `ticket_issues` (`id`) ON DELETE CASCADE,
   CONSTRAINT `work_front_ibfk_2` FOREIGN KEY (`short_form_id`) REFERENCES `short_form` (`id`) ON DELETE CASCADE,
   CONSTRAINT `work_front_ibfk_3` FOREIGN KEY (`cluster_id`) REFERENCES `cluster` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,7 @@ CREATE TABLE `work_front` (
 
 LOCK TABLES `work_front` WRITE;
 /*!40000 ALTER TABLE `work_front` DISABLE KEYS */;
-INSERT INTO `work_front` VALUES (1,1,1,7,'done',95),(2,2,2,11,'open',2),(3,3,3,2,'done',7),(4,4,4,14,'done',10),(5,5,5,2,'done',11),(6,6,9,11,'open',16),(7,7,7,11,'open',17),(8,8,8,11,'open',21),(9,9,10,4,'done',22),(10,10,1,118,'open',1123),(11,11,1,43,'done',693),(12,12,1,106,'open',139),(13,13,1,96,'open',4),(14,14,2,96,'open',3),(15,15,5,88,'open',35),(16,16,1,1,'done',587),(17,18,1,41,'open',265),(18,19,1,38,'done',1126),(19,20,1,38,'done',1126),(20,21,2,38,'done',1126),(21,22,1,14,'done',1127),(22,23,1,18,'open',1128);
+INSERT INTO `work_front` VALUES (1,1,1,7,'done',95),(2,2,2,11,'open',2),(3,3,3,2,'done',7),(4,4,4,14,'done',10),(5,5,5,2,'done',11),(6,6,9,11,'done',16),(7,7,7,11,'done',17),(8,8,8,11,'open',21),(9,9,10,4,'done',22),(10,10,1,118,'done',1123),(11,11,1,43,'done',693),(12,12,1,106,'done',139),(13,13,1,96,'done',4),(14,14,2,96,'open',3),(15,15,5,88,'done',35),(16,16,1,1,'done',587),(17,18,1,41,'done',265),(18,19,1,38,'done',1126),(19,20,1,38,'done',1126),(20,21,2,38,'done',1126),(21,22,1,14,'done',1127),(22,23,1,18,'done',1128),(23,24,1,115,'done',1127),(24,25,2,88,'open',1129),(25,26,3,88,'done',1129),(26,27,6,8,'open',1006),(27,28,1,87,'open',586),(28,29,1,11,'open',16),(29,32,1,78,'open',403),(30,31,1,38,'open',596),(31,33,1,1,'open',123),(32,34,3,11,'open',2),(33,35,4,8,'open',170);
 /*!40000 ALTER TABLE `work_front` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:32
+-- Dump completed on 2026-05-10 17:28:04

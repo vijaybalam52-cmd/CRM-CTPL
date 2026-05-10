@@ -36,7 +36,7 @@ CREATE TABLE `tickets` (
   CONSTRAINT `ticket_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE,
   CONSTRAINT `ticket_contact` FOREIGN KEY (`contact_id`) REFERENCES `contacts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `ticket_machine` FOREIGN KEY (`machine_id`) REFERENCES `machines` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `tickets` (
 
 LOCK TABLES `tickets` WRITE;
 /*!40000 ALTER TABLE `tickets` DISABLE KEYS */;
-INSERT INTO `tickets` VALUES (1,1000,1,96,95,'closed'),(2,1001,2,2,2,'open'),(3,1002,7,7,7,'closed'),(4,1003,10,10,10,'closed'),(5,1004,11,196,11,'closed'),(6,1005,16,16,16,'open'),(7,1006,17,17,17,'open'),(8,1007,21,21,21,'open'),(9,1008,22,22,22,'closed'),(10,1009,456,773,1123,'open'),(11,1010,629,693,693,'closed'),(12,1011,135,139,139,'open'),(13,1012,4,4,4,'open'),(14,1013,3,3,3,'open'),(15,1014,35,35,35,'open'),(16,1015,115,998,587,'closed'),(17,1016,835,938,938,'open'),(18,1017,242,265,265,'open'),(19,1018,543,1126,1126,'closed'),(20,1019,543,1126,1126,'closed'),(21,1020,648,714,1127,'closed'),(22,1021,148,155,1128,'open');
+INSERT INTO `tickets` VALUES (1,1000,1,96,95,'closed'),(2,1001,2,2,2,'open'),(3,1002,7,7,7,'closed'),(4,1003,10,10,10,'closed'),(5,1004,11,196,11,'closed'),(6,1005,16,16,16,'closed'),(7,1006,17,17,17,'closed'),(8,1007,21,21,21,'open'),(9,1008,22,22,22,'closed'),(10,1009,456,773,1123,'closed'),(11,1010,629,693,693,'closed'),(12,1011,135,139,139,'closed'),(13,1012,4,4,4,'closed'),(14,1013,3,3,3,'open'),(15,1014,35,35,35,'closed'),(16,1015,115,998,587,'closed'),(17,1016,835,938,938,'open'),(18,1017,242,265,265,'closed'),(19,1018,543,1126,1126,'closed'),(20,1019,543,1126,1126,'closed'),(21,1020,648,714,1127,'closed'),(22,1021,148,155,1128,'closed'),(23,1022,648,714,1127,'closed'),(24,1023,990,1127,1129,'open'),(25,1024,610,670,1006,'open'),(26,1025,534,586,586,'open'),(27,1026,16,16,16,'closed'),(28,1027,416,455,455,'open'),(29,1028,543,1126,596,'open'),(30,1029,371,403,403,'open'),(31,1030,119,123,123,'open'),(32,1031,163,170,170,'open');
 /*!40000 ALTER TABLE `tickets` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:32
+-- Dump completed on 2026-05-10 17:28:03

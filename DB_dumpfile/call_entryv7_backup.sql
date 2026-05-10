@@ -16,27 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `security_options`
+-- Table structure for table `backup`
 --
 
-DROP TABLE IF EXISTS `security_options`;
+DROP TABLE IF EXISTS `backup`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `security_options` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `security_option` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `backup` (
+  `id` int NOT NULL,
+  `company_id` int DEFAULT NULL,
+  `old_name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `company_id` (`company_id`),
+  CONSTRAINT `backup_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `security_options`
+-- Dumping data for table `backup`
 --
 
-LOCK TABLES `security_options` WRITE;
-/*!40000 ALTER TABLE `security_options` DISABLE KEYS */;
-INSERT INTO `security_options` VALUES (1,'Security Gate'),(2,'Work Permit'),(3,'Online/Email Permit'),(4,'Police Clearance'),(5,'Direct');
-/*!40000 ALTER TABLE `security_options` ENABLE KEYS */;
+LOCK TABLES `backup` WRITE;
+/*!40000 ALTER TABLE `backup` DISABLE KEYS */;
+INSERT INTO `backup` VALUES (1,990,'testing-1v1'),(2,990,'testing-1v2'),(3,204,'Classic Stripes Pvt Ltd');
+/*!40000 ALTER TABLE `backup` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:33
+-- Dump completed on 2026-05-10 17:28:03

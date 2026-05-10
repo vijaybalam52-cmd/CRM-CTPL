@@ -16,28 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `job_time`
+-- Table structure for table `roles`
 --
 
-DROP TABLE IF EXISTS `job_time`;
+DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `job_time` (
+CREATE TABLE `roles` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `purpose` varchar(255) DEFAULT NULL,
-  `est_time_job` time DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `role_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `role_name` (`role_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `job_time`
+-- Dumping data for table `roles`
 --
 
-LOCK TABLES `job_time` WRITE;
-/*!40000 ALTER TABLE `job_time` DISABLE KEYS */;
-INSERT INTO `job_time` VALUES (1,'Service','01:30:00'),(2,'Calib','01:30:00'),(3,'Train/Upg','02:00:00'),(4,'PMV','00:30:00'),(5,'Demo','01:00:00'),(6,'Extend','00:30:00'),(7,'Lunch','00:30:00'),(8,'BF','00:30:00');
-/*!40000 ALTER TABLE `job_time` ENABLE KEYS */;
+LOCK TABLES `roles` WRITE;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` VALUES (4,'Admin'),(2,'Application Engineer'),(3,'Chair Man'),(5,'Junior'),(1,'Manager'),(6,'Tester');
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:33
+-- Dump completed on 2026-05-10 17:28:03

@@ -16,30 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `start_end_location`
+-- Table structure for table `status_options`
 --
 
-DROP TABLE IF EXISTS `start_end_location`;
+DROP TABLE IF EXISTS `status_options`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `start_end_location` (
+CREATE TABLE `status_options` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `zarc` int DEFAULT NULL,
-  `rg` varchar(20) DEFAULT NULL,
-  `cluster_location` varchar(100) DEFAULT NULL,
-  `customer_name` varchar(100) DEFAULT NULL,
+  `status_option` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `start_end_location`
+-- Dumping data for table `status_options`
 --
 
-LOCK TABLES `start_end_location` WRITE;
-/*!40000 ALTER TABLE `start_end_location` DISABLE KEYS */;
-INSERT INTO `start_end_location` VALUES (1,8011,'BLR','E-City','Factory'),(2,2413,'MH','Talegaon','Talegaon Residency'),(3,4112,'CBE','Avinashi Rd','Avinashi Residency'),(4,1111,'NCR','Gurgaon','Gurgaon Residency'),(5,5011,'GJ','Sanand','Sanand Residency'),(6,4023,'CHN','Tambaram','Tambaram Residency'),(7,6021,'HYD','Jeedimetla','Jeedimetla Residency'),(8,3002,'KOL','Kharagpur','Kharagpur Residency');
-/*!40000 ALTER TABLE `start_end_location` ENABLE KEYS */;
+LOCK TABLES `status_options` WRITE;
+/*!40000 ALTER TABLE `status_options` DISABLE KEYS */;
+INSERT INTO `status_options` VALUES (1,'ACSC'),(2,'AMC'),(3,'Calibration'),(4,'Service Basis'),(5,'Warranty'),(6,'NOTA'),(7,'Expired');
+/*!40000 ALTER TABLE `status_options` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 14:14:33
+-- Dump completed on 2026-05-10 17:28:04
