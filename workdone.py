@@ -35,7 +35,7 @@ def get_workdone():
                    cl.zarc AS zarc,
                    cl.cluster AS cluster,
                    ti.log_by AS person,
-                   cont.phone AS contact_no,
+                   cont.phone AS contact_no, 
                    cl.rg AS rg,
                    wd.work_front_id AS work_front_id
             FROM work_done wd
@@ -186,7 +186,7 @@ def update_workdone(record_id):
     try:
         cnx = get_connection(DB_CONFIG)
         cur = cnx.cursor()
-        
+         
         # Build update query dynamically based on provided fields
         update_fields = []
         update_values = []
@@ -254,7 +254,7 @@ def update_workdone_spares(record_id):
     if not data:
         return jsonify({'error': 'No data provided'}), 400
     
-    spares_list = data.get('spares', [])
+    spares_list = data.get('spares', []) 
     if not isinstance(spares_list, list):
         return jsonify({'error': 'Spares must be an array'}), 400
     

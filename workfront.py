@@ -148,14 +148,14 @@ def update_workfront(record_id):
             return jsonify({'error': 'Record not found'}), 404
         return jsonify({'success': True})
     except Error as exc:
-        if cnx:
-            cnx.rollback()
+        if cnx:     
+            cnx.rollback()    
         return jsonify({'error': str(exc)}), 500
     finally:
         try:
             if cur:
                 cur.close()
-            if cnx:
+            if cnx:  
                 cnx.close()
         except Exception:
             pass
