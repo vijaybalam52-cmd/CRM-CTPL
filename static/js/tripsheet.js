@@ -470,9 +470,8 @@ function renderTable() {
         tr.innerHTML = `
             <div class="td" style="width: 95px;">${row.sn || ''}</div>
             <div class="td" style="width: 130px;">${row.mc_no || ''}</div>
-            <div class="td" style="width: 450px;">${row.Customer_Name || ''}</div>
+            <div class="td" style="width: 640px;">${row.Customer_Name || ''}</div>
             ${purposeCell}
-            <div class="td" style="width: 190px;">${row.task_class || ''}</div>
             <div class="td" style="width: 285px;">${row.cluster_location || ''}</div>
             <div class="td" style="width: 200px;">${row.est_dist_kms || ''}</div>
             <div class="td" style="width: 220px;">${row.est_trvl_time || ''}</div>
@@ -553,9 +552,8 @@ function renderTable() {
         tableTotalRow.innerHTML = `
             <div class="td" style="width: 95px;">${totalRow.sn || ''}</div>
             <div class="td" style="width: 130px;">${totalRow.mc_no || ''}</div>
-            <div class="td" style="width: 450px;">${totalRow.Customer_Name || ''}</div>
+            <div class="td" style="width: 640px;">${totalRow.Customer_Name || ''}</div>
             <div class="td" style="width: 280px;">${totalRow.purpose || ''}</div>
-            <div class="td" style="width: 190px;">${totalRow.task_class || ''}</div>
             <div class="td" style="width: 285px;">${totalRow.cluster_location || ''}</div>
             <div class="td" style="width: 200px;">${totalRow.est_dist_kms || ''}</div>
             <div class="td" style="width: 220px;">${totalRow.est_trvl_time || ''}</div>
@@ -591,11 +589,11 @@ function updateTotalRow() {
     
     // Update only the relevant cells
     const cells = tableTotalRow.querySelectorAll('.td');
-    if (cells.length >= 13) {
-        cells[8].textContent = totalFoodFuel || '';  // Food & Fuel
-        cells[10].textContent = totalSchdTime || ''; // Schd Time
-        cells[11].textContent = totalActualTime || ''; // Actual Time
-        cells[12].textContent = totalActualOdo || ''; // Actual ODO
+    if (cells.length >= 12) {
+        cells[7].textContent = totalFoodFuel || '';  // Food & Fuel
+        cells[9].textContent = totalSchdTime || ''; // Schd Time
+        cells[10].textContent = totalActualTime || ''; // Actual Time
+        cells[11].textContent = totalActualOdo || ''; // Actual ODO
     }
 }
 
@@ -1216,7 +1214,7 @@ function clearTable() {
     clearStorageData();
     
     // Clear main table body - this removes all rows including:
-    // SN, M/c No., Customer Name, Purpose, Task Class, Cluster Location,
+    // SN, M/c No., Customer Name, Purpose, Cluster Location,
     // Est. Dist Kms, Est. Trvl Time, Food/Fuel others, Est. Job time,
     // Schd ET, Actual Time, Actual ODO Read
     if (mainTableBody) {
@@ -1295,7 +1293,7 @@ function clearTable() {
     // Reset date to current date
     setCurrentDate();
     
-    console.log('All trip sheet data cleared including SN, M/c No., Customer Name, Purpose, Task Class, Cluster Location, Est. Dist Kms, Est. Trvl Time, Food/Fuel others, Est. Job time, Schd ET, Actual Time');
+    console.log('All trip sheet data cleared including SN, M/c No., Customer Name, Purpose, Cluster Location, Est. Dist Kms, Est. Trvl Time, Food/Fuel others, Est. Job time, Schd ET, Actual Time');
 }
 
 // Export trip sheet to Excel using ExcelJS (supports borders and styling)
@@ -1322,7 +1320,6 @@ async function exportToExcel() {
             'M/c No.', 
             'Customer Name', 
             'Purpose', 
-            'Task Class', 
             'Cluster Location',
             'Est. Dist Kms', 
             'Est. Trvl Time', 
@@ -1351,37 +1348,35 @@ async function exportToExcel() {
                 const purposeCell = row.querySelector('.purpose-cell');
                 const purpose = purposeCell ? purposeCell.textContent.trim() : (cells[3] ? cells[3].textContent.trim() : (rowData.purpose || ''));
                 
-                const taskClass = cells[4] ? cells[4].textContent.trim() : (rowData.task_class || '');
-                const clusterLocation = cells[5] ? cells[5].textContent.trim() : (rowData.cluster_location || '');
-                const estDistKms = cells[6] ? cells[6].textContent.trim() : (rowData.est_dist_kms || '');
-                const estTrvlTime = cells[7] ? cells[7].textContent.trim() : (rowData.est_trvl_time || '');
+                const clusterLocation = cells[4] ? cells[4].textContent.trim() : (rowData.cluster_location || '');
+                const estDistKms = cells[5] ? cells[5].textContent.trim() : (rowData.est_dist_kms || '');
+                const estTrvlTime = cells[6] ? cells[6].textContent.trim() : (rowData.est_trvl_time || '');
                 
                 // Food/Fuel - check dynamic cell
                 const foodFuelCell = row.querySelector('.food-fuel-cell');
-                const foodFuel = foodFuelCell ? foodFuelCell.textContent.trim() : (cells[8] ? cells[8].textContent.trim() : (rowData.food_fuel_others || ''));
+                const foodFuel = foodFuelCell ? foodFuelCell.textContent.trim() : (cells[7] ? cells[7].textContent.trim() : (rowData.food_fuel_others || ''));
                 
-                const estJobTime = cells[9] ? cells[9].textContent.trim() : (rowData.est_job_time || '');
+                const estJobTime = cells[8] ? cells[8].textContent.trim() : (rowData.est_job_time || '');
                 
                 // Schd ET - check input first, then display div, then cell
                 const schdEtInput = row.querySelector('.schd-et-input');
                 const schdEtDisplay = row.querySelector('.schd-et-display');
                 const schdEtCell = row.querySelector('.schd-et-cell');
-                const schdEt = schdEtInput ? schdEtInput.value.trim() : (schdEtDisplay ? schdEtDisplay.textContent.trim() : (schdEtCell ? schdEtCell.textContent.trim() : (cells[10] ? cells[10].textContent.trim() : '')));
+                const schdEt = schdEtInput ? schdEtInput.value.trim() : (schdEtDisplay ? schdEtDisplay.textContent.trim() : (schdEtCell ? schdEtCell.textContent.trim() : (cells[9] ? cells[9].textContent.trim() : '')));
                 
                 // Actual Time - check input
                 const actualTimeInput = row.querySelector('.actual-time-input');
-                const actualTime = actualTimeInput ? actualTimeInput.value.trim() : (cells[11] ? cells[11].textContent.trim() : '');
+                const actualTime = actualTimeInput ? actualTimeInput.value.trim() : (cells[10] ? cells[10].textContent.trim() : '');
                 
                 // Actual ODO Read - check input
                 const actualOdoInput = row.querySelector('.actual-odo-input');
-                const actualOdo = actualOdoInput ? actualOdoInput.value.trim() : (cells[12] ? cells[12].textContent.trim() : '');
+                const actualOdo = actualOdoInput ? actualOdoInput.value.trim() : (cells[11] ? cells[11].textContent.trim() : '');
                 
                 mainTableData.push([
                     sn,
                     mcNo,
                     customerName,
                     purpose,
-                    taskClass,
                     clusterLocation,
                     estDistKms,
                     estTrvlTime,
@@ -1404,22 +1399,20 @@ async function exportToExcel() {
             const totalMcNo = totalCells[1] ? totalCells[1].textContent.trim() : (totalRow.mc_no || '');
             const totalCustomerName = totalCells[2] ? totalCells[2].textContent.trim() : (totalRow.Customer_Name || 'Total');
             const totalPurpose = totalCells[3] ? totalCells[3].textContent.trim() : (totalRow.purpose || '');
-            const totalTaskClass = totalCells[4] ? totalCells[4].textContent.trim() : (totalRow.task_class || '');
-            const totalClusterLocation = totalCells[5] ? totalCells[5].textContent.trim() : (totalRow.cluster_location || '');
-            const totalEstDistKms = totalCells[6] ? totalCells[6].textContent.trim() : '';
-            const totalEstTrvlTime = totalCells[7] ? totalCells[7].textContent.trim() : '';
-            const totalFoodFuel = totalCells[8] ? totalCells[8].textContent.trim() : '';
-            const totalEstJobTime = totalCells[9] ? totalCells[9].textContent.trim() : '';
-            const totalSchdEt = totalCells[10] ? totalCells[10].textContent.trim() : '';
-            const totalActualTime = totalCells[11] ? totalCells[11].textContent.trim() : '';
-            const totalActualOdo = totalCells[12] ? totalCells[12].textContent.trim() : '';
+            const totalClusterLocation = totalCells[4] ? totalCells[4].textContent.trim() : (totalRow.cluster_location || '');
+            const totalEstDistKms = totalCells[5] ? totalCells[5].textContent.trim() : '';
+            const totalEstTrvlTime = totalCells[6] ? totalCells[6].textContent.trim() : '';
+            const totalFoodFuel = totalCells[7] ? totalCells[7].textContent.trim() : '';
+            const totalEstJobTime = totalCells[8] ? totalCells[8].textContent.trim() : '';
+            const totalSchdEt = totalCells[9] ? totalCells[9].textContent.trim() : '';
+            const totalActualTime = totalCells[10] ? totalCells[10].textContent.trim() : '';
+            const totalActualOdo = totalCells[11] ? totalCells[11].textContent.trim() : '';
             
             mainTableData.push([
                 totalSn,
                 totalMcNo,
                 totalCustomerName,
                 totalPurpose,
-                totalTaskClass,
                 totalClusterLocation,
                 totalEstDistKms,
                 totalEstTrvlTime,
@@ -1467,17 +1460,16 @@ async function exportToExcel() {
         worksheet.columns = [
             { width: 25 },  // Column A - Labels for vertical tables / SN for main table
             { width: 20 },  // Column B - Values for vertical tables / M/c No. for main table
-            { width: 30 },  // Column C - Customer Name
+            { width: 45 },  // Column C - Customer Name
             { width: 20 },  // Column D - Purpose
-            { width: 15 },  // Column E - Task Class
-            { width: 20 },  // Column F - Cluster Location
-            { width: 15 },  // Column G - Est. Dist Kms
-            { width: 15 },  // Column H - Est. Trvl Time
-            { width: 18 },  // Column I - Food, Fuel others
-            { width: 15 },  // Column J - Est. Job time
-            { width: 12 },  // Column K - Schd ET
-            { width: 12 },  // Column L - Actual Time
-            { width: 15 }   // Column M - Actual ODO Read
+            { width: 20 },  // Column E - Cluster Location
+            { width: 15 },  // Column F - Est. Dist Kms
+            { width: 15 },  // Column G - Est. Trvl Time
+            { width: 18 },  // Column H - Food, Fuel others
+            { width: 15 },  // Column I - Est. Job time
+            { width: 12 },  // Column J - Schd ET
+            { width: 12 },  // Column K - Actual Time
+            { width: 15 }   // Column L - Actual ODO Read
         ];
         
         // Add main table data rows
