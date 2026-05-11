@@ -165,6 +165,21 @@
   padding-bottom: 4px;
 }
 
+.workfront-content .workfront-prior-select {
+  width: 24px;
+  height: 26px;
+  border: 1px solid #006db8;
+  border-radius: 4px;
+  background: #fff;
+  color: #000;
+  font-family: "Calibri", sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+}
+
 .workfront-content .done-checkbox {
   width: 18px;
   height: 18px;

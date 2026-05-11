@@ -21,6 +21,14 @@ let selectedWorkFrontIds = new Set();
 // LocalStorage key for PR values (temporary, not stored in database)
 const STORAGE_KEY_PR_VALUES = 'workfront_pr_values';
 const STORAGE_KEY_LAST_DONE_IDS = 'workfront_last_done_ids';
+const EDITABLE_PRIOR_OPTIONS = {
+    '1': { purpose: 'Service', s: '1', a: '0', i: '0', d: '0', e: '0', f: '1', p: '0' },
+    '2': { purpose: 'Calib', s: '0', a: '1', i: '0', d: '0', e: '0', f: '1', p: '0' },
+    '3': { purpose: 'Train/Upg', s: '0', a: '0', i: '1', d: '0', e: '0', f: '1', p: '0' },
+    '4': { purpose: 'PMV', s: '0', a: '0', i: '0', d: '1', e: '0', f: '1', p: '0' },
+    '5': { purpose: 'Demo', s: '0', a: '0', i: '0', d: '0', e: '1', f: '1', p: '0' },
+    '6': { purpose: 'Extend', s: '0', a: '0', i: '0', d: '0', e: '0', f: '1', p: '1' }
+};
 
 // Helper function to get total rows (based on actual data length)
 function getTotalRows() {
@@ -73,6 +81,7 @@ async function fetchWorkfrontData() {
                 mc: row.mc || '',
                 ticket_no: row.ticket_no || '',
                 company: row.company || '',
+                short_form_id: row.short_form_id || null,
                 prior: row.prior || '',
                 s: row.s || '0',
                 a: row.a || '0',
@@ -88,7 +97,8 @@ async function fetchWorkfrontData() {
                 person: row.person || '',
                 contact: row.contact || '',
                 rg: row.rg || '',
-                logby: row.logby || ''
+                logby: row.logby || '',
+                can_edit_prior: Boolean(row.can_edit_prior)
             });
             rowIds.push(row.id);
             sprValues.push(row.spr || '-');
@@ -566,6 +576,62 @@ async function updateSprPr(rowIndex, spr, pr) {
     }
 }
 
+async function updateEditablePrior(rowIndex, prior) {
+    const id = rowIds[rowIndex];
+    const row = tableData[rowIndex];
+    if (!id || !row || !row.can_edit_prior) return;
+
+    try {
+        const response = await fetch(`/api/workfront/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prior })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to update prior');
+        }
+
+        const updated = data.short_form || EDITABLE_PRIOR_OPTIONS[String(prior)];
+        row.short_form_id = updated.id || row.short_form_id;
+        row.prior = String(updated.prior || prior);
+        row.s = String(updated.s || '0');
+        row.a = String(updated.a || '0');
+        row.i = String(updated.i || '0');
+        row.d = String(updated.d || '0');
+        row.e = String(updated.e || '0');
+        row.f = String(updated.f || '0');
+        row.p = String(updated.p || '0');
+        row.purpose = updated.purpose || row.purpose;
+        row.can_edit_prior = row.purpose.trim().toLowerCase() === 'extend';
+
+        renderMainTable();
+        renderSprColumn();
+        renderPrColumn();
+        saveOriginalOrder();
+    } catch (error) {
+        console.error('Error updating prior:', error);
+        alert('Error updating prior: ' + error.message);
+        renderMainTable();
+    }
+}
+
+function renderPriorCell(row, rowIndex) {
+    if (!row) return '';
+    if (!row.can_edit_prior) return row.prior || '';
+
+    const options = Object.keys(EDITABLE_PRIOR_OPTIONS).map(value => {
+        const selected = String(row.prior) === value ? 'selected' : '';
+        return `<option value="${value}" ${selected}>${value}</option>`;
+    }).join('');
+
+    return `
+        <select class="workfront-prior-select" data-row-index="${rowIndex}" title="Change Extend purpose">
+            ${options}
+        </select>
+    `;
+}
+
 function syncSprPrHeights() {
     // Sync SPR and PR cell heights to match main table rows (for proper row alignment)
     if (!mainTableBody || !sprBody || !prBody) return;
@@ -610,7 +676,7 @@ function renderMainTable() {
             <div class="td" style="width: 45px;">${row ? row.mc : ''}</div>
             <div class="td ticket-no-cell" style="width: 80px;">${row ? row.ticket_no : ''}</div>
             <div class="td td-left" style="width: 270px;">${row ? row.company : ''}</div>
-            <div class="td" style="width: 26px;">${row ? row.prior : ''}</div>
+            <div class="td" style="width: 26px;">${renderPriorCell(row, i)}</div>
             <div class="td" style="width: 15px;">${row ? row.s : ''}</div>
             <div class="td" style="width: 15px;">${row ? row.a : ''}</div>
             <div class="td" style="width: 15px;">${row ? row.i : ''}</div>
@@ -632,8 +698,14 @@ function renderMainTable() {
         `;
         mainTableBody.appendChild(tr);
         
-        // Add event listener for checkbox
         if (row) {
+            const priorSelect = tr.querySelector('.workfront-prior-select');
+            if (priorSelect) {
+                priorSelect.addEventListener('change', (e) => {
+                    updateEditablePrior(i, e.target.value);
+                });
+            }
+
             const checkbox = tr.querySelector('.done-checkbox');
             if (checkbox) {
                 checkbox.addEventListener('change', (e) => {

@@ -27,6 +27,7 @@ def get_workfront():
                    ti.date AS issue_date,
                    m.mc_no AS mc_no,
                    comp.name AS company_name,
+                   wf.short_form_id AS short_form_id,
                    sf.prior AS prior,
                    sf.s, sf.a, sf.i, sf.d, sf.e, sf.f, sf.p,
                    sf.purpose AS purpose,
@@ -62,6 +63,7 @@ def get_workfront():
                 'date': date_str,
                 'mc': str(row.get('mc_no')) if row.get('mc_no') else '',
                 'company': str(row.get('company_name')) if row.get('company_name') else '',
+                'short_form_id': row.get('short_form_id'),
                 'prior': str(row.get('prior')) if row.get('prior') else '',
                 's': str(row.get('s')) if row.get('s') is not None else '0',
                 'a': str(row.get('a')) if row.get('a') is not None else '0',
@@ -71,6 +73,7 @@ def get_workfront():
                 'f': str(row.get('f')) if row.get('f') is not None else '0',
                 'p': str(row.get('p')) if row.get('p') is not None else '0',
                 'purpose': str(row.get('purpose')) if row.get('purpose') else '',
+                'can_edit_prior': (str(row.get('purpose') or '').strip().lower() == 'extend'),
                 'remarks': str(row.get('remarks')) if row.get('remarks') else '',
                 'zarc': str(row.get('zarc')) if row.get('zarc') is not None else '',
                 'cluster': str(row.get('cluster_name')) if row.get('cluster_name') else '',
@@ -113,7 +116,7 @@ def update_workfront(record_id):
     cnx = cur = None
     try:
         cnx = get_connection(DB_CONFIG)
-        cur = cnx.cursor()
+        cur = cnx.cursor(dictionary=True)
         
         # Build update query dynamically
         update_fields = []
@@ -135,6 +138,31 @@ def update_workfront(record_id):
         if 'status' in data:
             update_fields.append("status = %s")
             update_values.append(data.get('status'))
+
+        if 'prior' in data:
+            try:
+                prior_value = int(data.get('prior'))
+            except (TypeError, ValueError):
+                return jsonify({'error': 'Prior must be a number from 1 to 6'}), 400
+
+            if prior_value < 1 or prior_value > 6:
+                return jsonify({'error': 'Prior must be between 1 and 6'}), 400
+
+            cur.execute(
+                """
+                SELECT id, prior, s, a, i, d, e, f, p, purpose
+                FROM short_form
+                WHERE f = 1 AND prior = %s
+                LIMIT 1
+                """,
+                (prior_value,),
+            )
+            short_form = cur.fetchone()
+            if not short_form:
+                return jsonify({'error': 'Matching purpose was not found for this prior'}), 400
+
+            update_fields.append("short_form_id = %s")
+            update_values.append(short_form['id'])
         
         if not update_fields:
             return jsonify({'error': 'No valid fields to update'}), 400
@@ -146,7 +174,21 @@ def update_workfront(record_id):
         cnx.commit()
         if cur.rowcount == 0:
             return jsonify({'error': 'Record not found'}), 404
-        return jsonify({'success': True})
+        response = {'success': True}
+        if 'short_form' in locals() and short_form:
+            response['short_form'] = {
+                'id': short_form.get('id'),
+                'prior': str(short_form.get('prior') or ''),
+                's': str(short_form.get('s') or '0'),
+                'a': str(short_form.get('a') or '0'),
+                'i': str(short_form.get('i') or '0'),
+                'd': str(short_form.get('d') or '0'),
+                'e': str(short_form.get('e') or '0'),
+                'f': str(short_form.get('f') or '0'),
+                'p': str(short_form.get('p') or '0'),
+                'purpose': str(short_form.get('purpose') or ''),
+            }
+        return jsonify(response)
     except Error as exc:
         if cnx:     
             cnx.rollback()    
